@@ -1,7 +1,8 @@
 // @ts-ignore
-import markdownit from "markdown-it";
-import { schema } from "./schema";
 import { Mark, MarkType, Node, Attrs, Schema, NodeType } from "prosemirror-model";
+// import markdownit from "markdown-it";
+// import { schema } from "./schema";
+// import { tokens } from "./tokens";
 
 // FIXME
 type Token = any;
@@ -112,7 +113,7 @@ function tokenHandlers(schema: Schema, tokens: { [token: string]: ParseSpec }) {
 	for (let type in tokens) {
 		let spec = tokens[type];
 		if (spec.block) {
-			let nodeType = schema.nodeType(spec.block);
+			let nodeType = (schema as any).nodeType(spec.block);
 			if (noCloseToken(spec, type)) {
 				handlers[type] = (state, tok, tokens, i) => {
 					state.openNode(nodeType, attrs(spec, tok, tokens, i));
@@ -125,7 +126,7 @@ function tokenHandlers(schema: Schema, tokens: { [token: string]: ParseSpec }) {
 				handlers[type + "_close"] = (state) => state.closeNode();
 			}
 		} else if (spec.node) {
-			let nodeType = schema.nodeType(spec.node);
+			let nodeType = (schema as any).nodeType(spec.node);
 			handlers[type] = (state, tok, tokens, i) => state.addNode(nodeType, attrs(spec, tok, tokens, i));
 		} else if (spec.mark) {
 			let markType = schema.marks[spec.mark];
@@ -229,10 +230,10 @@ export class MarkdownParser {
 	/// Parse a string as [CommonMark](http://commonmark.org/) markup,
 	/// and create a ProseMirror document as prescribed by this parser's
 	/// rules.
-	parse(text: string) {
-		let state = new MarkdownParseState(this.schema, this.tokenHandlers),
-			doc;
-		state.parseTokens(this.tokenizer.parse(text, {}));
+	parse(text: string | Token[]) {
+		let state = new MarkdownParseState(this.schema, this.tokenHandlers);
+		let doc;
+		state.parseTokens(typeof text == "string" ? this.tokenizer.parse(text, {}) : text);
 		do {
 			doc = state.closeNode();
 		} while (state.stack.length);
@@ -240,47 +241,9 @@ export class MarkdownParser {
 	}
 }
 
-function listIsTight(tokens: readonly Token[], i: number) {
-	while (++i < tokens.length) if (tokens[i].type != "list_item_open") return tokens[i].hidden;
-	return false;
-}
+// function listIsTight(tokens: readonly Token[], i: number) {
+// 	while (++i < tokens.length) if (tokens[i].type != "list_item_open") return tokens[i].hidden;
+// 	return false;
+// }
 
-/// A parser parsing unextended [CommonMark](http://commonmark.org/),
-/// without inline HTML, and producing a document in the basic schema.
-export const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark", { html: false }), {
-	blockquote: { block: "blockquote" },
-	paragraph: { block: "paragraph" },
-	list_item: { block: "list_item" },
-	bullet_list: { block: "bullet_list", getAttrs: (_, tokens, i) => ({ tight: listIsTight(tokens, i) }) },
-	ordered_list: {
-		block: "ordered_list",
-		getAttrs: (tok, tokens, i) => ({
-			order: +tok.attrGet("start") || 1,
-			tight: listIsTight(tokens, i),
-		}),
-	},
-	heading: { block: "heading", getAttrs: (tok) => ({ level: +tok.tag.slice(1) }) },
-	code_block: { block: "code_block", noCloseToken: true },
-	fence: { block: "code_block", getAttrs: (tok) => ({ params: tok.info || "" }), noCloseToken: true },
-	hr: { node: "horizontal_rule" },
-	image: {
-		node: "image",
-		getAttrs: (tok) => ({
-			src: tok.attrGet("src"),
-			title: tok.attrGet("title") || null,
-			alt: (tok.children[0] && tok.children[0].content) || null,
-		}),
-	},
-	hardbreak: { node: "hard_break" },
-
-	em: { mark: "em" },
-	strong: { mark: "strong" },
-	link: {
-		mark: "link",
-		getAttrs: (tok) => ({
-			href: tok.attrGet("href"),
-			title: tok.attrGet("title") || null,
-		}),
-	},
-	code_inline: { mark: "code", noCloseToken: true },
-});
+// export const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark", { html: false }), tokens);
