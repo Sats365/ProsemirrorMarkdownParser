@@ -1,5 +1,6 @@
 // @ts-ignore
 import { Mark, MarkType, Node, Attrs, Schema, NodeType } from "prosemirror-model";
+import { NodeId } from "../MarkdownParser/MarkdownParser";
 // import markdownit from "markdown-it";
 // import { schema } from "./schema";
 // import { tokens } from "./tokens";
@@ -89,10 +90,10 @@ class MarkdownParseState {
 }
 
 function attrs(spec: ParseSpec, token: Token, tokens: Token[], i: number) {
-	if (spec.getAttrs) return spec.getAttrs(token, tokens, i);
+	if (spec.getAttrs) return { ...spec.getAttrs(token, tokens, i), NodeId: token[NodeId] };
 	// For backwards compatibility when `attrs` is a Function
-	else if (spec.attrs instanceof Function) return spec.attrs(token);
-	else return spec.attrs;
+	else if (spec.attrs instanceof Function) return { ...spec.attrs(token), NodeId: token[NodeId] };
+	else return { ...spec.attrs, NodeId: token[NodeId] };
 }
 
 // Code content is represented as a single token with a `content`
@@ -230,10 +231,10 @@ export class MarkdownParser {
 	/// Parse a string as [CommonMark](http://commonmark.org/) markup,
 	/// and create a ProseMirror document as prescribed by this parser's
 	/// rules.
-	parse(text: string | Token[]) {
+	parse(content: string | Token[]) {
 		let state = new MarkdownParseState(this.schema, this.tokenHandlers);
 		let doc;
-		state.parseTokens(typeof text == "string" ? this.tokenizer.parse(text, {}) : text);
+		state.parseTokens(typeof content == "string" ? this.tokenizer.parse(content, {}) : content);
 		do {
 			doc = state.closeNode();
 		} while (state.stack.length);
