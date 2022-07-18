@@ -74,6 +74,13 @@ export const schema = new Schema({
 			group: "inline",
 			attrs: { text: { default: null }, tag: { default: null } },
 		},
+		blockMd_component: {
+			marks: "",
+			group: "block",
+			defining: true,
+			content: "text*",
+			attrs: { text: { default: null }, tag: { default: null } },
+		},
 	},
 	marks: {
 		s: {},

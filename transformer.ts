@@ -26,6 +26,17 @@ export class Transformer {
 				};
 			}
 		}
+		if (node.type == "blockMd") {
+			node = {
+				type: "blockMd_component",
+				attrs: {
+					text: node.content[0].text,
+					tag: (renderer(node.content[0].text, context) as any).children[0],
+				},
+				content: node.content,
+			};
+		}
+
 		return node;
 	}
 
