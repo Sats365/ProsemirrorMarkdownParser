@@ -1,6 +1,5 @@
 // @ts-ignore
 import { Mark, MarkType, Node, Attrs, Schema, NodeType } from "prosemirror-model";
-import { NodeId } from "../MarkdownParser/MarkdownParser";
 // import markdownit from "markdown-it";
 // import { schema } from "./schema";
 // import { tokens } from "./tokens";
@@ -90,10 +89,10 @@ class MarkdownParseState {
 }
 
 function attrs(spec: ParseSpec, token: Token, tokens: Token[], i: number) {
-	if (spec.getAttrs) return { ...spec.getAttrs(token, tokens, i), NodeId: token[NodeId] };
+	if (spec.getAttrs) return { ...spec.getAttrs(token, tokens, i) } 
 	// For backwards compatibility when `attrs` is a Function
-	else if (spec.attrs instanceof Function) return { ...spec.attrs(token), NodeId: token[NodeId] };
-	else return { ...spec.attrs, NodeId: token[NodeId] };
+	else if (spec.attrs instanceof Function) return { ...spec.attrs(token) } 
+	else return { ...spec.attrs }
 }
 
 // Code content is represented as a single token with a `content`

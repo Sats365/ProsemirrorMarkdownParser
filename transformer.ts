@@ -1,11 +1,33 @@
 import Token from "markdown-it/lib/token";
-import { Schema, SchemaType, Tag } from "../Markdoc";
+import Context from "../Context/Context";
+import { RenderableTreeNode, Schema, SchemaType, Tag } from "../Markdoc";
 import { getSquareFormatter } from "../MarkdownFormatter/Formatter/SquareFormatter";
 import MarkdownFormatter from "../MarkdownFormatter/MarkdownFormatter";
 import { schema } from "./schema";
 
 export class Transformer {
 	constructor(private _schemes: Record<string, Schema>, private _markdownFormatter: MarkdownFormatter) {}
+
+	renderTransform(
+		node: any,
+		renderer: (content: string, context?: Context) => RenderableTreeNode,
+		context?: Context
+	) {
+		if (node?.content) node.content = node.content.map((n) => this.renderTransform(n, renderer, context));
+		if (node?.marks) {
+			let inlineMdIndex = node.marks.findIndex((mark) => mark.type === "inlineMd");
+			if (inlineMdIndex !== -1) {
+				node = {
+					type: "inlineMd_component",
+					attrs: {
+						tag: (renderer(node.text, context) as any).children[0],
+						text: node.text,
+					},
+				};
+			}
+		}
+		return node;
+	}
 
 	postTransform(node: any) {
 		if (JSON.stringify(node.content) === JSON.stringify([{ type: "horizontal_rule" }])) {
