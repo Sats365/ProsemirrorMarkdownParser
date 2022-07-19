@@ -104,26 +104,26 @@ export class Transformer {
 
 			if (!schema.nodes?.[newNode.type]) {
 				const nodeSchema = this._schemes[newNode.type];
-				const formatter = getSquareFormatter(nodeSchema, {});
+				const formatter = getSquareFormatter(nodeSchema);
 				const tag = new Tag(newNode.type, newNode.attrs);
 
 				if (token.type === "tag_open") {
-					const content = formatter(tag, "", {}, null, false, true);
+					const content = formatter(tag, "", false, true);
 					if (parent && parent.type == "inline") return this._getInlineMdOpenTokens(content);
 					return [{ type: "blockMd_open", tag: "blockMd" }, ...this._getParagraphTokens(content)];
 				}
 
 				if (token.type === "tag_close") {
-					const content = formatter(tag, "", {}, null, true);
+					const content = formatter(tag, "", true);
 					if (parent && parent.type == "inline") return this._getInlineMdCloseTokens(content);
 					return [...this._getParagraphTokens(content), { type: "blockMd_close", tag: "blockMd" }];
 				}
 
 				if (nodeSchema.type == SchemaType.block) {
-					return this._getParagraphTokens(null, this._getInlineMdTokens(formatter(tag, "", {})));
+					return this._getParagraphTokens(null, this._getInlineMdTokens(formatter(tag, "")));
 				} else {
-					if (!parent) return this._getParagraphTokens(null, this._getInlineMdTokens(formatter(tag, "", {})));
-					return this._getInlineMdTokens(formatter(new Tag(newNode.type, newNode.attrs), "", {}));
+					if (!parent) return this._getParagraphTokens(null, this._getInlineMdTokens(formatter(tag, "")));
+					return this._getInlineMdTokens(formatter(new Tag(newNode.type, newNode.attrs), ""));
 				}
 			}
 
