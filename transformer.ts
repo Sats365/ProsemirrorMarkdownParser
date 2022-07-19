@@ -1,6 +1,6 @@
 import Token from "markdown-it/lib/token";
 import Context from "../../Context/Context";
-import { RenderableTreeNodes, Schema, SchemaType, Tag } from "../../Markdoc";
+import { RenderableTreeNodes, Schema, SchemaType, Tag } from "../../Parser/Markdoc";
 import { getSquareFormatter } from "../Formatter/Formatter/SquareFormatter";
 import MarkdownFormatter from "../Formatter/Formatter";
 import { ParserOptions } from "../../Parser/Parser";
