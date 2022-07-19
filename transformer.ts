@@ -1,8 +1,9 @@
 import Token from "markdown-it/lib/token";
 import Context from "../Context/Context";
-import { RenderableTreeNode, Schema, SchemaType, Tag } from "../Markdoc";
+import { RenderableTreeNodes, Schema, SchemaType, Tag } from "../Markdoc";
 import { getSquareFormatter } from "../MarkdownFormatter/Formatter/SquareFormatter";
 import MarkdownFormatter from "../MarkdownFormatter/MarkdownFormatter";
+import { ParserOptions } from "../MarkdownParser/MarkdownParser";
 import { schema } from "./schema";
 
 export class Transformer {
@@ -10,7 +11,7 @@ export class Transformer {
 
 	renderTransform(
 		node: any,
-		renderer: (content: string, context?: Context) => RenderableTreeNode,
+		renderer: (content: string, context?: Context, parserOptions?: ParserOptions) => RenderableTreeNodes,
 		context?: Context
 	) {
 		if (node?.content) node.content = node.content.map((n) => this.renderTransform(n, renderer, context));
@@ -20,7 +21,7 @@ export class Transformer {
 				node = {
 					type: "inlineMd_component",
 					attrs: {
-						tag: (renderer(node.text, context) as any).children[0],
+						tag: renderer(node.text, context, { isOneElement: true, isBlock: false }) as any,
 						text: node.text,
 					},
 				};
@@ -31,7 +32,7 @@ export class Transformer {
 				type: "blockMd_component",
 				attrs: {
 					text: node.content[0].text,
-					tag: (renderer(node.content[0].text, context) as any).children[0],
+					tag: renderer(node.content[0].text, context, { isOneElement: true, isBlock: true }) as any,
 				},
 				content: node.content,
 			};
