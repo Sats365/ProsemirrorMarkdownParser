@@ -1,9 +1,9 @@
 import Token from "markdown-it/lib/token";
-import Context from "../Context/Context";
-import { RenderableTreeNodes, Schema, SchemaType, Tag } from "../Markdoc";
-import { getSquareFormatter } from "../Wysiwyg/Formatter/Formatter/SquareFormatter";
-import MarkdownFormatter from "../Wysiwyg/Formatter/Formatter";
-import { ParserOptions } from "../MarkdownParser/MarkdownParser";
+import Context from "../../Context/Context";
+import { RenderableTreeNodes, Schema, SchemaType, Tag } from "../../Markdoc";
+import { getSquareFormatter } from "../Formatter/Formatter/SquareFormatter";
+import MarkdownFormatter from "../Formatter/Formatter";
+import { ParserOptions } from "../../Parser/Parser";
 import { schema } from "./schema";
 
 export class Transformer {
