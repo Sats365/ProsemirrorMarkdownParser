@@ -1,10 +1,10 @@
-import { formatter, parser } from "../../../../pages/app";
+import { parser } from "../../../../pages/app";
 import { catalogMarkdown, emptyArticleItemRef } from "../../../Library/test/data/markdown";
 import Context from "../../Context/Context";
 import TestContext from "../../Context/TestContext";
 import getNodeSchemes from "../../Schemes/getNodeSchemes";
 import getTagSchemes from "../../Schemes/getTagSchemes";
-import { Transformer } from "./Transformer";
+// import { Transformer } from "./Transformer";
 
 const parseContext: Context = new TestContext(
 	parser.parse.bind(parser),
@@ -14,7 +14,7 @@ const parseContext: Context = new TestContext(
 );
 const schemes = { ...getTagSchemes(parseContext), ...getNodeSchemes(parseContext) };
 
-const transformer = new Transformer(schemes, formatter);
+// const transformer = new Transformer(schemes, formatter);
 
 test("test", () => {
 	expect("1").toEqual("1");
