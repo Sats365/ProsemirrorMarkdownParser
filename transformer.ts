@@ -5,6 +5,7 @@ import { getSquareFormatter } from "../Formatter/Formatter/SquareFormatter";
 import MarkdownFormatter from "../Formatter/Formatter";
 import { ParserOptions } from "../../Parser/Parser";
 import { schema } from "./schema";
+import { CliPrettify } from "markdown-table-prettify";
 
 export class Transformer {
 	constructor(private _schemes: Record<string, Schema>, private _markdownFormatter: MarkdownFormatter) {}
@@ -14,16 +15,16 @@ export class Transformer {
 		renderer: (content: string, context?: Context, parserOptions?: ParserOptions) => RenderableTreeNodes,
 		context?: Context
 	) {
-		if (node?.content) node.content = node.content.map((n) => this.renderTransform(n, renderer, context));
+		if (node?.content) node.content = node.content.map(n => this.renderTransform(n, renderer, context));
 		if (node?.marks) {
-			let inlineMdIndex = node.marks.findIndex((mark) => mark.type === "inlineMd");
+			let inlineMdIndex = node.marks.findIndex(mark => mark.type === "inlineMd");
 			if (inlineMdIndex !== -1) {
 				node = {
 					type: "inlineMd_component",
 					attrs: {
 						tag: renderer(node.text, context, { isOneElement: true, isBlock: false }) as any,
-						text: node.text,
-					},
+						text: node.text
+					}
 				};
 			}
 		}
@@ -32,9 +33,9 @@ export class Transformer {
 				type: "blockMd_component",
 				attrs: {
 					text: node.content[0].text,
-					tag: renderer(node.content[0].text, context, { isOneElement: true, isBlock: true }) as any,
+					tag: renderer(node.content[0].text, context, { isOneElement: true, isBlock: true }) as any
 				},
-				content: node.content,
+				content: node.content
 			};
 		}
 
@@ -47,12 +48,12 @@ export class Transformer {
 		}
 		if (node?.content)
 			node.content = node.content
-				.map((n) => this.postTransform(n))
+				.map(n => this.postTransform(n))
 				.flat()
-				.filter((n) => n);
+				.filter(n => n);
 
 		if (node.marks) {
-			let index = node.marks.findIndex((mark) => mark.type === "link");
+			let index = node.marks.findIndex(mark => mark.type === "link");
 			if (index !== -1) {
 				node.type = "link_component";
 				node.attrs = { ...node.marks[index].attrs, text: node.text };
@@ -68,10 +69,9 @@ export class Transformer {
 
 		if (node.type === "table" || node.type === "blockMd") {
 			const content = node.type === "table" ? [node] : node.content;
-			node = {
-				type: "blockMd",
-				content: [this._getTextNode(this._markdownFormatter.render({ type: "doc", content }, {}), true)],
-			};
+			let text = this._markdownFormatter.render({ type: "doc", content }, {});
+			if (node.type === "table") text = CliPrettify.prettify(text);
+			node = { type: "blockMd", content: [this._getTextNode(text, true)] };
 		}
 
 		return node;
@@ -79,9 +79,9 @@ export class Transformer {
 
 	predTransform(token: Token[]): Token[] {
 		let transformTokens = token
-			.map((t) => this._predTransform(t))
+			.map(t => this._predTransform(t))
 			.flat()
-			.filter((n) => n);
+			.filter(n => n);
 		return transformTokens;
 	}
 
@@ -99,7 +99,7 @@ export class Transformer {
 			const newNode = {
 				type: token.meta.tag,
 				tag: token.meta.tag,
-				attrs,
+				attrs
 			};
 
 			if (!schema.nodes?.[newNode.type]) {
@@ -133,9 +133,9 @@ export class Transformer {
 		}
 		if (token?.children)
 			token.children = token.children
-				.map((n) => this._predTransform(n, token))
+				.map(n => this._predTransform(n, token))
 				.flat()
-				.filter((n) => n);
+				.filter(n => n);
 		return token;
 	}
 
@@ -146,9 +146,9 @@ export class Transformer {
 				type: "inline",
 				tag: "",
 				children: children ?? [...this._getInlineMdTokens(content)],
-				content: content ?? "",
+				content: content ?? ""
 			},
-			{ type: "paragraph_close", tag: "p" },
+			{ type: "paragraph_close", tag: "p" }
 		];
 	}
 
