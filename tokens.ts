@@ -1,11 +1,6 @@
 export const tokens = {
 	br: { node: "br" },
-	error: {
-		node: "error",
-		getAttrs: (tok) => tok.meta,
-	},
 
-	// cmd: { node: "cmd", getAttrs: (tok) => tok.attrs },
 	note: { block: "note", getAttrs: (tok) => tok.attrs },
 	blockMd: { block: "blockMd" },
 

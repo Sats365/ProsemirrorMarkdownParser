@@ -52,15 +52,7 @@ export const schema = new Schema({
 		},
 		blockMd: { content: "block+", group: "block", defining: true, marks: "" },
 
-		error: {
-			atom: true,
-			group: "block",
-			selectable: false,
-			attrs: { message: { default: null } },
-		},
-
 		br: { atom: true, inline: true, group: "inline", selectable: false },
-		// cmd: { attrs: { text: { default: null }, name: { default: null } }, atom: true, inline: true, group: "inline" },
 
 		link_component: {
 			atom: true,
