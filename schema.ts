@@ -50,6 +50,16 @@ export const schema = new Schema({
 			group: "block",
 			attrs: { type: { default: null }, title: { default: null } },
 		},
+		comment: {
+			content: "block+",
+			group: "block",
+			attrs: {
+				name: { default: null },
+				date: { default: null },
+				title: { default: null },
+				hash: { default: null },
+			},
+		},
 		blockMd: { content: "block+", group: "block", defining: true, marks: "" },
 
 		br: { atom: true, inline: true, group: "inline", selectable: false },

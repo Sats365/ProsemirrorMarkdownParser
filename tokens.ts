@@ -2,6 +2,7 @@ export const tokens = {
 	br: { node: "br" },
 
 	note: { block: "note", getAttrs: (tok) => tok.attrs },
+	comment: { block: "comment", getAttrs: (tok) => tok.attrs },
 	blockMd: { block: "blockMd" },
 
 	table: { block: "table", getAttrs: (_, tokens, i) => ({ tight: listIsTight(tokens, i) }) },
