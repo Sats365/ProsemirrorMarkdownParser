@@ -1,21 +1,21 @@
 import Token from "markdown-it/lib/token";
+import { CliPrettify } from "markdown-table-prettify";
 import Context from "../../Context/Context";
 import { RenderableTreeNodes, Schema, SchemaType, Tag } from "../../Parser/Markdoc";
-import { getSquareFormatter } from "../Formatter/Formatter/SquareFormatter";
-import MarkdownFormatter from "../Formatter/Formatter";
 import { ParserOptions } from "../../Parser/Parser";
+import MarkdownFormatter from "../Formatter/Formatter";
+import { getSquareFormatter } from "../Formatter/Formatter/SquareFormatter";
 import { schema } from "./schema";
-import { CliPrettify } from "markdown-table-prettify";
 
 export class Transformer {
 	constructor(private _schemes: Record<string, Schema>, private _markdownFormatter: MarkdownFormatter) {}
 
-	renderTransform(
+	finalTransform(
 		node: any,
 		renderer: (content: string, context?: Context, parserOptions?: ParserOptions) => RenderableTreeNodes,
 		context?: Context
 	) {
-		if (node?.content) node.content = node.content.map((n) => this.renderTransform(n, renderer, context));
+		if (node?.content) node.content = node.content.map((n) => this.finalTransform(n, renderer, context));
 		if (node?.marks) {
 			let inlineMdIndex = node.marks.findIndex((mark) => mark.type === "inlineMd");
 			if (inlineMdIndex !== -1) {
@@ -85,6 +85,54 @@ export class Transformer {
 		return transformTokens;
 	}
 
+	tablesTransform(tokens: Token[]): Token[] {
+		let isOpen = false;
+		for (let idx = 0; idx < tokens.length; idx++) {
+			const token = tokens[idx];
+			if (token.type === "tag_open" && token.info === "table") {
+				tokens.splice(idx + 1, 0, { type: "tbody_open", tag: "tbody" });
+				isOpen = true;
+			}
+			if (token.type === "tag_close" && token.info === "/table") {
+				tokens.splice(idx, 0, { type: "tbody_close", tag: "tbody" });
+				isOpen = false;
+				idx++;
+			}
+			if (isOpen) {
+				if (token.type === "hr") {
+					tokens.splice(idx, 1);
+					idx--;
+				}
+				if (token.type === "bullet_list_open") tokens.splice(idx, 1, { type: "tr_open", tag: "tr" });
+				if (token.type === "bullet_list_close") tokens.splice(idx, 1, { type: "tr_close", tag: "tr" });
+				if (token.type === "list_item_open") {
+					const isAnnotation = tokens[idx + 1].type === "annotation";
+					const attrs = {};
+					if (isAnnotation) tokens[idx + 1].meta.attributes.forEach((a) => (attrs[a.name] = a.value));
+
+					tokens.splice(idx, isAnnotation ? 2 : 1, {
+						type: "td_open",
+						tag: "td",
+						attrs: attrs,
+						meta: isAnnotation ? tokens[idx + 1].meta : null,
+					});
+				}
+				if (token.type === "list_item_close") tokens.splice(idx, 1, { type: "td_close", tag: "td" });
+			}
+			if (token?.children) token.children = this.tablesTransform(token.children);
+		}
+
+		for (let idx = 0; idx < tokens.length; idx++) {
+			if (tokens[idx].type === "td_open" && tokens[idx + 1].type === "inline") {
+				tokens.splice(idx + 1, 1, { type: "paragraph_open", tag: "p" }, tokens[idx + 1], {
+					type: "paragraph_close",
+					tag: "p",
+				});
+			}
+		}
+		return tokens;
+	}
+
 	private _getTextNode(content?: string, unsetMark?: boolean) {
 		if (unsetMark) return { type: "text", text: content };
 		return { type: "text", marks: [{ type: "inlineMd" }], text: content };
@@ -131,11 +179,7 @@ export class Transformer {
 			if (token.type === "tag_close") newNode.type = newNode.type + "_close";
 			return newNode;
 		}
-		if (token?.children)
-			token.children = token.children
-				.map((n) => this._predTransform(n, token))
-				.flat()
-				.filter((n) => n);
+		if (token?.children) token.children = this.predTransform(token.children);
 		return token;
 	}
 
