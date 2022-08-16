@@ -70,6 +70,29 @@ export const schema = new Schema({
 			group: "block",
 			attrs: { type: { default: null }, title: { default: null } },
 		},
+		comment: {
+			content: "block+",
+			group: "block",
+			attrs: {
+				// mail: { default: null },
+				id: { default: null },
+				date: { default: null },
+				time: { default: null },
+				isResolved: { default: false },
+			},
+		},
+
+		answer: {
+			content: "block+",
+			group: "block",
+			attrs: {
+				// mail: { default: null },
+				id: { default: null },
+				date: { default: null },
+				time: { default: null },
+			},
+		},
+
 		blockMd: { content: "block+", group: "block", defining: true, marks: "" },
 
 		br: { atom: true, inline: true, group: "inline", selectable: false },
