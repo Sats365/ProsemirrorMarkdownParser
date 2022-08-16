@@ -54,10 +54,10 @@ export const schema = new Schema({
 			content: "block+",
 			group: "block",
 			attrs: {
-				name: { default: null },
+				// mail: { default: null },
+				id: { default: null },
 				date: { default: null },
-				title: { default: null },
-				hash: { default: null },
+				time: { default: null },
 			},
 		},
 		blockMd: { content: "block+", group: "block", defining: true, marks: "" },
