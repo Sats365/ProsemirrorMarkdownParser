@@ -5,29 +5,24 @@ export const schema = new Schema({
 		text: { group: "inline" },
 		doc: { content: "block+" },
 		horizontal_rule: { group: "block" },
-		table: { content: "(thead | tbody)*", group: "block" },
-		thead: { content: "tr*", group: "block" },
-		tbody: { content: "tr*", group: "block" },
-		tr: { content: "(th | td)*", group: "block" },
-		th: {
+		table: { content: "tableRow+", group: "block" },
+		tableRow: { content: "(tableCell | tableHeader)*", group: "block" },
+		tableHeader: {
 			content: "block+",
 			group: "block",
 			attrs: {
-				colspan: { default: null },
-				rowspan: { default: null },
+				colspan: { default: 1 },
+				rowspan: { default: 1 },
 				colwidth: { default: null },
-				align: { default: null },
 			},
 		},
-		td: {
+		tableCell: {
 			content: "block+",
 			group: "block",
 			attrs: {
-				isHeader: { default: null },
-				colspan: { default: null },
-				rowspan: { default: null },
+				colspan: { default: 1 },
+				rowspan: { default: 1 },
 				colwidth: { default: null },
-				align: { default: null },
 			},
 		},
 		paragraph: { content: "inline*", group: "block" },
