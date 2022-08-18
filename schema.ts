@@ -70,6 +70,12 @@ export const schema = new Schema({
 			group: "block",
 			attrs: { type: { default: null }, title: { default: null } },
 		},
+
+		comment_block: {
+			content: "block+",
+			group: "block",
+		},
+
 		comment: {
 			content: "block+",
 			group: "block",
