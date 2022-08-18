@@ -99,6 +99,11 @@ export const schema = new Schema({
 			},
 		},
 
+		comment_input: {
+			content: "block+",
+			group: "block",
+		},
+
 		blockMd: { content: "block+", group: "block", defining: true, marks: "" },
 
 		br: { atom: true, inline: true, group: "inline", selectable: false },
