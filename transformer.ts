@@ -43,7 +43,7 @@ export class Transformer {
 
 	postTransform(node: any) {
 		if (JSON.stringify(node.content) === JSON.stringify([{ type: "horizontal_rule" }])) {
-			node.content = [{ type: "paragraph", content: [{ type: "text", text: "null" }] }];
+			node.content = [{ type: "paragraph", content: [] }];
 		}
 		if (node?.content)
 			node.content = node.content
