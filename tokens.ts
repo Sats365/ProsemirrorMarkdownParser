@@ -5,7 +5,7 @@ export const tokens = {
 	comment_block: { block: "comment_block", getAttrs: (tok) => tok.attrs },
 	comment: { block: "comment", getAttrs: (tok) => tok.attrs },
 	answer: { block: "answer", getAttrs: (tok) => tok.attrs },
-	comment_answer: { block: "block" },
+	comment_input: { block: "comment_input" },
 	blockMd: { block: "blockMd" },
 	table: { block: "table" },
 	thead: { block: "thead" },
