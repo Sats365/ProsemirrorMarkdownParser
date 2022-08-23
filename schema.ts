@@ -64,6 +64,12 @@ export const schema = new Schema({
 			group: "block",
 			attrs: { type: { default: null }, title: { default: null } },
 		},
+
+		comment_block: {
+			content: "block+",
+			group: "block",
+		},
+
 		comment: {
 			content: "block+",
 			group: "block",
@@ -85,6 +91,11 @@ export const schema = new Schema({
 				date: { default: null },
 				time: { default: null },
 			},
+		},
+
+		comment_input: {
+			content: "block+",
+			group: "block",
 		},
 
 		blockMd: { content: "block+", group: "block", defining: true, marks: "" },

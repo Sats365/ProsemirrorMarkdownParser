@@ -72,6 +72,13 @@ export class Transformer {
 			node = { type: "blockMd", content: [this._getTextNode(text, true)] };
 		}
 
+		// if (node.type === "comment_block") {
+		// 	node.content.push({
+		// 		type: "comment_input",
+		// 		content: [{ type: "paragraph", content: [] }],
+		// 	});
+		// }
+
 		return node;
 	}
 

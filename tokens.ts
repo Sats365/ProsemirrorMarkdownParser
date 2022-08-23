@@ -2,8 +2,10 @@ export const tokens = {
 	br: { node: "br" },
 
 	note: { block: "note", getAttrs: (tok) => tok.attrs },
+	comment_block: { block: "comment_block", getAttrs: (tok) => tok.attrs },
 	comment: { block: "comment", getAttrs: (tok) => tok.attrs },
 	answer: { block: "answer", getAttrs: (tok) => tok.attrs },
+	comment_input: { block: "comment_input" },
 	blockMd: { block: "blockMd" },
 	table: { block: "table" },
 	tableRow: { block: "tableRow" },
