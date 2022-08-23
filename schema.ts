@@ -102,6 +102,17 @@ export const schema = new Schema({
 		comment_input: {
 			content: "block+",
 			group: "block",
+			attrs: {
+				id: { default: null },
+			},
+		},
+
+		answer_input: {
+			content: "block+",
+			group: "block",
+			attrs: {
+				id: { default: null },
+			},
 		},
 
 		blockMd: { content: "block+", group: "block", defining: true, marks: "" },
