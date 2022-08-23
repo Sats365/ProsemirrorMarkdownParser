@@ -1,5 +1,4 @@
 import Token from "markdown-it/lib/token";
-import { CliPrettify } from "markdown-table-prettify";
 import Context from "../../Context/Context";
 import { RenderableTreeNodes, Schema, SchemaType, Tag } from "../../Parser/Markdoc";
 import { ParserOptions } from "../../Parser/Parser";
@@ -43,8 +42,9 @@ export class Transformer {
 	}
 
 	postTransform(node: any) {
-		if (JSON.stringify(node.content) === JSON.stringify([{ type: "horizontal_rule" }]))
+		if (JSON.stringify(node.content) === JSON.stringify([{ type: "horizontal_rule" }])) {
 			node.content = [{ type: "paragraph", content: [] }];
+		}
 		if (node?.content)
 			node.content = node.content
 				.map((n) => this.postTransform(n))
@@ -66,10 +66,9 @@ export class Transformer {
 			return this._getTextNode(`![${attrs?.alt ?? ""}](${attrs.src}${attrs?.title ? ` "${attrs?.title}"` : ""})`);
 		}
 
-		if (node.type === "table" || node.type === "blockMd") {
-			const content = node.type === "table" ? [node] : node.content;
+		if (node.type === "blockMd") {
+			const content = node.content;
 			let text = this._markdownFormatter.render({ type: "doc", content }, {});
-			if (node.type === "table") text = CliPrettify.prettify(text);
 			node = { type: "blockMd", content: [this._getTextNode(text, true)] };
 		}
 
@@ -91,54 +90,6 @@ export class Transformer {
 		return transformTokens;
 	}
 
-	tablesTransform(tokens: Token[]): Token[] {
-		let isOpen = false;
-		for (let idx = 0; idx < tokens.length; idx++) {
-			const token = tokens[idx];
-			if (token.type === "tag_open" && token.info === "table") {
-				tokens.splice(idx + 1, 0, { type: "tbody_open", tag: "tbody" });
-				isOpen = true;
-			}
-			if (token.type === "tag_close" && token.info === "/table") {
-				tokens.splice(idx, 0, { type: "tbody_close", tag: "tbody" });
-				isOpen = false;
-				idx++;
-			}
-			if (isOpen) {
-				if (token.type === "hr") {
-					tokens.splice(idx, 1);
-					idx--;
-				}
-				if (token.type === "bullet_list_open") tokens.splice(idx, 1, { type: "tr_open", tag: "tr" });
-				if (token.type === "bullet_list_close") tokens.splice(idx, 1, { type: "tr_close", tag: "tr" });
-				if (token.type === "list_item_open") {
-					const isAnnotation = tokens[idx + 1].type === "annotation";
-					const attrs = {};
-					if (isAnnotation) tokens[idx + 1].meta.attributes.forEach((a) => (attrs[a.name] = a.value));
-
-					tokens.splice(idx, isAnnotation ? 2 : 1, {
-						type: "td_open",
-						tag: "td",
-						attrs: attrs,
-						meta: isAnnotation ? tokens[idx + 1].meta : null,
-					});
-				}
-				if (token.type === "list_item_close") tokens.splice(idx, 1, { type: "td_close", tag: "td" });
-			}
-			if (token?.children) token.children = this.tablesTransform(token.children);
-		}
-
-		for (let idx = 0; idx < tokens.length; idx++) {
-			if (tokens[idx].type === "td_open" && tokens[idx + 1].type === "inline") {
-				tokens.splice(idx + 1, 1, { type: "paragraph_open", tag: "p" }, tokens[idx + 1], {
-					type: "paragraph_close",
-					tag: "p",
-				});
-			}
-		}
-		return tokens;
-	}
-
 	private _getTextNode(content?: string, unsetMark?: boolean) {
 		if (unsetMark) return { type: "text", text: content };
 		return { type: "text", marks: [{ type: "inlineMd" }], text: content };
@@ -147,6 +98,21 @@ export class Transformer {
 	private _predTransform(token: Token, parent?: Token): Token | Token[] {
 		if (token.type === "annotation") return this._getInlineMdTokens(`{${token.info}}`);
 		if (token.type === "variable") return this._getInlineMdTokens(`{% ${token.info} %}`);
+		if (token.tag) {
+			if (token.tag === "tbody" || token.tag === "thead") return null;
+			if (token.tag === "tr") {
+				token.type = "tableRow" + token.type.slice(2);
+				token.tag = "tableRow";
+			}
+			if (token.tag === "td") {
+				token.type = "tableCell" + token.type.slice(2);
+				token.tag = "tableCell";
+			}
+			if (token.tag === "th") {
+				token.type = "tableHeader" + token.type.slice(2);
+				token.tag = "tableHeader";
+			}
+		}
 		if (token.type === "tag" || token.type === "tag_open" || token.type === "tag_close") {
 			let attrs = {};
 			if (token.meta?.attributes) token.meta?.attributes.forEach(({ name, value }) => (attrs[name] = value));
