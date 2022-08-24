@@ -7,15 +7,6 @@ export const schema = new Schema({
 		horizontal_rule: { group: "block" },
 		table: { content: "tableRow+", group: "block" },
 		tableRow: { content: "(tableCell | tableHeader)*", group: "block" },
-		tableHeader: {
-			content: "block+",
-			group: "block",
-			attrs: {
-				colspan: { default: 1 },
-				rowspan: { default: 1 },
-				colwidth: { default: null },
-			},
-		},
 		tableCell: {
 			content: "block+",
 			group: "block",
@@ -25,6 +16,20 @@ export const schema = new Schema({
 				colwidth: { default: null },
 			},
 		},
+		tableHeader: {
+			content: "block+",
+			group: "block",
+			attrs: {
+				colspan: { default: 1 },
+				rowspan: { default: 1 },
+				colwidth: { default: null },
+			},
+		},
+		tableCell_simple: { content: "inline+", group: "block" },
+		tableHeader_simple: { content: "inline+", group: "block" },
+		tableBodyRow_simple: { content: "tableCell_simple+", group: "block" },
+		tableHeaderRow_simple: { content: "tableHeader_simple+", group: "block" },
+		table_simple: { content: "(tableHeader_simple | tableCell_simple)*", group: "block" },
 		paragraph: { content: "inline*", group: "block" },
 		blockquote: { content: "block+", group: "block" },
 		list_item: { content: "paragraph block*", defining: true },
