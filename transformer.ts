@@ -72,11 +72,28 @@ export class Transformer {
 			node = { type: "blockMd", content: [this._getTextNode(text, true)] };
 		}
 
-		if (node.type === "comment_block") {
-			node.content.push({
+		if (node.type === "comment") {
+			const answerNodes = [];
+
+			node.content.forEach((c, idx) => {
+				if (c.type === "answer") {
+					node.content[idx] = null;
+					answerNodes.push(c);
+				}
+			});
+			node.content = node.content.filter((x) => x);
+
+			const commentNode = { type: "comment", attrs: node.attrs, content: node.content };
+
+			const anwerInputNode = {
 				type: "answer_input",
 				content: [{ type: "paragraph", content: [] }],
-			});
+			};
+
+			node.type = "comment_block";
+			node.attrs = {};
+			node.content = [];
+			node.content.push(commentNode, ...answerNodes, anwerInputNode);
 		}
 
 		return node;
