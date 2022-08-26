@@ -38,6 +38,10 @@ export class Transformer {
 			};
 		}
 
+		if (node.type === "comment" || node.type === "answer") {
+			console.log(node.attrs);
+		}
+
 		return node;
 	}
 

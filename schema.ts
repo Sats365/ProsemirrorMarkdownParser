@@ -79,10 +79,8 @@ export const schema = new Schema({
 			content: "block+",
 			group: "block",
 			attrs: {
-				// mail: { default: null },
-				id: { default: null },
-				date: { default: null },
-				time: { default: null },
+				mail: { default: null },
+				dateTime: { default: null },
 				isResolved: { default: false },
 			},
 		},
@@ -91,10 +89,8 @@ export const schema = new Schema({
 			content: "block+",
 			group: "block",
 			attrs: {
-				// mail: { default: null },
-				id: { default: null },
-				date: { default: null },
-				time: { default: null },
+				mail: { default: null },
+				dateTime: { default: null },
 			},
 		},
 
@@ -102,7 +98,7 @@ export const schema = new Schema({
 			content: "block+",
 			group: "block",
 			attrs: {
-				id: { default: null },
+				mail: { default: null },
 			},
 		},
 
@@ -110,7 +106,7 @@ export const schema = new Schema({
 			content: "block+",
 			group: "block",
 			attrs: {
-				id: { default: null },
+				mail: { default: null },
 			},
 		},
 
