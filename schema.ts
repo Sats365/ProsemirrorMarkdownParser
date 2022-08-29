@@ -102,14 +102,6 @@ export const schema = new Schema({
 			},
 		},
 
-		answer_input: {
-			content: "block+",
-			group: "block",
-			attrs: {
-				mail: { default: null },
-			},
-		},
-
 		blockMd: { content: "block+", group: "block", defining: true, marks: "" },
 
 		br: { atom: true, inline: true, group: "inline", selectable: false },

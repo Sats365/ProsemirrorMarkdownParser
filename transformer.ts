@@ -85,15 +85,10 @@ export class Transformer {
 
 			const commentNode = { type: "comment", attrs: node.attrs, content: node.content };
 
-			const anwerInputNode = {
-				type: "answer_input",
-				content: [{ type: "paragraph", content: [] }],
-			};
-
 			node.type = "comment_block";
 			node.attrs = {};
 			node.content = [];
-			node.content.push(commentNode, ...answerNodes, anwerInputNode);
+			node.content.push(commentNode, ...answerNodes);
 		}
 
 		return node;
