@@ -94,9 +94,9 @@ export class Transformer {
 		return node;
 	}
 
-	predTransform(token: Token[]): Token[] {
+	predTransform(token: Token[], parent?: Token): Token[] {
 		let transformTokens = token
-			.map((t) => this._predTransform(t))
+			.map((t) => this._predTransform(t, parent))
 			.flat()
 			.filter((n) => n);
 		return transformTokens;
@@ -163,7 +163,7 @@ export class Transformer {
 			if (token.type === "tag_close") newNode.type = newNode.type + "_close";
 			return newNode;
 		}
-		if (token?.children) token.children = this.predTransform(token.children);
+		if (token?.children) token.children = this.predTransform(token.children, token);
 		return token;
 	}
 
