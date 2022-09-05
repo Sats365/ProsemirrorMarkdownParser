@@ -54,6 +54,7 @@ export class Transformer {
 		if (node.marks) {
 			let index = node.marks.findIndex((mark) => mark.type === "link");
 			if (index !== -1) {
+				node.marks[index].attrs.href = decodeURIComponent(node.marks[index].attrs.href as string);
 				node.type = "link_component";
 				node.attrs = { ...node.marks[index].attrs, text: node.text };
 				delete node.marks;
