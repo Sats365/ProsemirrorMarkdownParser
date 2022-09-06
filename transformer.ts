@@ -41,13 +41,13 @@ export class Transformer {
 		return node;
 	}
 
-	postTransform(node: any) {
+	postTransform(node: any, previousNode?: any) {
 		if (JSON.stringify(node.content) === JSON.stringify([{ type: "horizontal_rule" }])) {
 			node.content = [{ type: "paragraph", content: [] }];
 		}
 		if (node?.content)
 			node.content = node.content
-				.map((n) => this.postTransform(n))
+				.map((n, i) => this.postTransform(n, i == 0 ? null : node.content[i - 1]))
 				.flat()
 				.filter((n) => n);
 
@@ -74,6 +74,8 @@ export class Transformer {
 		}
 
 		if (node.type === "comment") {
+			if (!previousNode || previousNode.type !== "paragraph") return null;
+
 			const answerNodes = [];
 
 			node.content.forEach((c, idx) => {
@@ -90,6 +92,11 @@ export class Transformer {
 			node.attrs = {};
 			node.content = [];
 			node.content.push(commentNode, ...answerNodes);
+
+			if (!previousNode.attrs) previousNode.attrs = { comments: [node] };
+			else previousNode.attrs.comments.push(node);
+
+			return null;
 		}
 
 		return node;
