@@ -1,10 +1,10 @@
 import Token from "markdown-it/lib/token";
+import { transformNodeToModel } from "../../../Comments/transformer/Transformer";
 import Context from "../../Context/Context";
 import { RenderableTreeNodes, Schema, SchemaType, Tag } from "../../Parser/Markdoc";
 import { ParserOptions } from "../../Parser/Parser";
 import MarkdownFormatter from "../Formatter/Formatter";
-import { getSquareFormatter } from "../Formatter/Formatter/SquareFormatter";
-import { transformNodeToModel } from "./commentBlockTransformer";
+import { getSquareFormatter } from "../Formatter/Formatters/SquareFormatter";
 import { schema } from "./schema";
 
 export class Transformer {
