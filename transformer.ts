@@ -4,6 +4,7 @@ import { RenderableTreeNodes, Schema, SchemaType, Tag } from "../../Parser/Markd
 import { ParserOptions } from "../../Parser/Parser";
 import MarkdownFormatter from "../Formatter/Formatter";
 import { getSquareFormatter } from "../Formatter/Formatter/SquareFormatter";
+import { transformNodeToModel } from "./commentBlockTransformer";
 import { schema } from "./schema";
 
 export class Transformer {
@@ -76,25 +77,10 @@ export class Transformer {
 		if (node.type === "comment") {
 			if (!previousNode || previousNode.type !== "paragraph") return null;
 
-			const answerNodes = [];
+			const commentBlock = transformNodeToModel(node);
 
-			node.content.forEach((c, idx) => {
-				if (c.type === "answer") {
-					node.content[idx] = null;
-					answerNodes.push(c);
-				}
-			});
-			node.content = node.content.filter((x) => x);
-
-			const commentNode = { type: "comment", attrs: node.attrs, content: node.content };
-
-			node.type = "comment_block";
-			node.attrs = {};
-			node.content = [];
-			node.content.push(commentNode, ...answerNodes);
-
-			if (!previousNode.attrs) previousNode.attrs = { comments: [node] };
-			else previousNode.attrs.comments.push(node);
+			if (!previousNode.attrs) previousNode.attrs = { comments: [commentBlock] };
+			else previousNode.attrs.comments.push(commentBlock);
 
 			return null;
 		}
