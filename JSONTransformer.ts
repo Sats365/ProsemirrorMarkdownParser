@@ -3,7 +3,7 @@ import { JSONContent } from "@tiptap/core";
 class JSONTransformer {
 	static transform(
 		node: JSONContent,
-		transformers: ((node: JSONContent, previousNode?: JSONContent) => JSONContent)[]
+		transformers: ((node: JSONContent, previousNode?: JSONContent) => JSONContent | JSONContent[])[]
 	): JSONContent {
 		const transform = (node: JSONContent, previousNode?: JSONContent): JSONContent => {
 			if (node?.content)
