@@ -1,3 +1,4 @@
+import { JSONContent } from "@tiptap/core";
 import Token from "markdown-it/lib/token";
 import { transformNodeToModel } from "../../../Comments/transformer/Transformer";
 import Context from "../../Context/Context";
@@ -11,7 +12,7 @@ export class Transformer {
 	constructor(private _schemes: Record<string, Schema>, private _markdownFormatter: MarkdownFormatter) {}
 
 	finalTransform(
-		node: any,
+		node: JSONContent,
 		renderer: (content: string, context?: Context, parserOptions?: ParserOptions) => RenderableTreeNodes,
 		context?: Context
 	) {
@@ -42,16 +43,20 @@ export class Transformer {
 		return node;
 	}
 
-	postTransform(node: any, previousNode?: any) {
+	async postTransform(node: JSONContent, previousNode?: any, context?: Context): Promise<JSONContent> {
 		if (JSON.stringify(node.content) === JSON.stringify([{ type: "horizontal_rule" }])) {
 			node.content = [{ type: "paragraph", content: [] }];
 		}
 		if (node?.content)
-			node.content = node.content
-				.map((n, i) => this.postTransform(n, i == 0 ? null : node.content[i - 1]))
+			node.content = (
+				await Promise.all(
+					node.content.map(
+						async (n, i) => await this.postTransform(n, i == 0 ? null : node.content[i - 1], context)
+					)
+				)
+			)
 				.flat()
 				.filter((n) => n);
-
 
 		if (node.type === "image") {
 			let attrs = node.attrs;
@@ -67,7 +72,7 @@ export class Transformer {
 		if (node.type === "comment") {
 			if (!previousNode || previousNode.type !== "paragraph") return null;
 
-			const commentBlock = transformNodeToModel(node);
+			const commentBlock = await transformNodeToModel(node, context);
 
 			if (!previousNode.attrs) previousNode.attrs = { comments: [commentBlock] };
 			else previousNode.attrs.comments.push(commentBlock);
