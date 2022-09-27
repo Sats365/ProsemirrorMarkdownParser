@@ -70,7 +70,7 @@ export class Transformer {
 		}
 
 		if (node.type === "comment") {
-			if (!previousNode || previousNode.type !== "paragraph") return null;
+			if (!previousNode) return null;
 
 			const commentBlock = await transformNodeToModel(node, context);
 
