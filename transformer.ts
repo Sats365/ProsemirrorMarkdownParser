@@ -82,7 +82,7 @@ export class Transformer {
 
 		if (nextNode?.type === "comment") {
 			const commentBlock = await transformNodeToModel(nextNode, context);
-			nextNode.attrs = { comments: [commentBlock] }x;
+			nextNode.attrs = { comments: [commentBlock] };
 			nextNode.content = [node];
 			return null;
 		}
