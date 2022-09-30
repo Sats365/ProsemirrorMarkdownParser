@@ -43,7 +43,12 @@ export class Transformer {
 		return node;
 	}
 
-	async postTransform(node: JSONContent, previousNode?: any, context?: Context): Promise<JSONContent> {
+	async postTransform(
+		node: JSONContent,
+		previousNode?: any,
+		nextNode?: any,
+		context?: Context
+	): Promise<JSONContent> {
 		if (JSON.stringify(node.content) === JSON.stringify([{ type: "horizontal_rule" }])) {
 			node.content = [{ type: "paragraph", content: [] }];
 		}
@@ -51,7 +56,13 @@ export class Transformer {
 			node.content = (
 				await Promise.all(
 					node.content.map(
-						async (n, i) => await this.postTransform(n, i == 0 ? null : node.content[i - 1], context)
+						async (n, i) =>
+							await this.postTransform(
+								n,
+								i == 0 ? null : node.content[i - 1],
+								i == node.content.length - 1 ? null : node.content[i + 1],
+								context
+							)
 					)
 				)
 			)
@@ -69,14 +80,10 @@ export class Transformer {
 			node = { type: "blockMd", content: [this._getTextNode(text, true)] };
 		}
 
-		if (node.type === "comment") {
-			if (!previousNode) return null;
-
-			const commentBlock = await transformNodeToModel(node, context);
-
-			if (!previousNode.attrs) previousNode.attrs = { comments: [commentBlock] };
-			else previousNode.attrs.comments.push(commentBlock);
-
+		if (nextNode?.type === "comment") {
+			const commentBlock = await transformNodeToModel(nextNode, context);
+			nextNode.attrs = { comments: [commentBlock] }x;
+			nextNode.content = [node];
 			return null;
 		}
 
