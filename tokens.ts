@@ -13,6 +13,7 @@ export const tokens = {
 	tableHeader: { block: "tableHeader", getAttrs: (tok) => tok.attrs },
 	blockquote: { block: "blockquote" },
 	paragraph: { block: "paragraph" },
+	error: { block: "error" },
 	list_item: { block: "list_item" },
 	bullet_list: { block: "bullet_list", getAttrs: (_, tokens, i) => ({ tight: listIsTight(tokens, i) }) },
 	ordered_list: {
@@ -34,7 +35,6 @@ export const tokens = {
 			alt: (tok.children[0] && tok.children[0].content) || null,
 		}),
 	},
-	error: { node: "error", getAttrs: (tok) => tok.meta },
 	hardbreak: { node: "hard_break" },
 	s: { mark: "s" },
 	em: { mark: "em" },

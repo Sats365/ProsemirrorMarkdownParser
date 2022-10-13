@@ -31,6 +31,7 @@ export const schema = new Schema({
 		tableHeaderRow_simple: { content: "tableHeader_simple+", group: "block" },
 		table_simple: { content: "(tableHeader_simple | tableCell_simple)*", group: "block" },
 		paragraph: { content: "inline*", group: "block" },
+		error: { content: "inline*", group: "block" },
 		blockquote: { content: "block+", group: "block" },
 		list_item: { content: "paragraph block*", defining: true },
 		bullet_list: { content: "list_item+", group: "block", attrs: { tight: { default: false } } },
@@ -69,7 +70,6 @@ export const schema = new Schema({
 			group: "block",
 			attrs: { type: { default: null }, title: { default: null } },
 		},
-		error: { inline: true, group: "inline", draggable: true },
 
 		comment_block: {
 			content: "block+",
