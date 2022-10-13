@@ -1,6 +1,6 @@
 import { JSONContent } from "@tiptap/core";
 import Token from "markdown-it/lib/token";
-// import { transformNodeToModel } from "../../../Comments/transformer/Transformer";
+import { transformNodeToModel } from "../../../Comments/transformer/Transformer";
 import Context from "../../Context/Context";
 import { RenderableTreeNodes, Schema, SchemaType, Tag } from "../../Parser/Markdoc";
 import { ParserOptions } from "../../Parser/Parser";
@@ -80,12 +80,12 @@ export class Transformer {
 			node = { type: "blockMd", content: [this._getTextNode(text, true)] };
 		}
 
-		// if (nextNode?.type === "comment") {
-		// 	const commentBlock = await transformNodeToModel(nextNode, context);
-		// 	nextNode.attrs = { comments: [commentBlock] };
-		// 	nextNode.content = [node];
-		// 	return null;
-		// }
+		if (nextNode?.type === "comment") {
+			const commentBlock = await transformNodeToModel(nextNode, context);
+			nextNode.attrs = { comments: [commentBlock] };
+			nextNode.content = [node];
+			return null;
+		}
 
 		return node;
 	}
