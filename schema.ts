@@ -86,6 +86,14 @@ export const schema = new Schema({
 			},
 		},
 
+		style_wrapper: {
+			group: "block",
+			content: "block+",
+			attrs: {
+				style: { default: null },
+			},
+		},
+
 		answer: {
 			content: "block+",
 			group: "block",
