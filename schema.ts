@@ -71,6 +71,12 @@ export const schema = new Schema({
 			attrs: { type: { default: null }, title: { default: null } },
 		},
 
+		cut: {
+			content: "block+",
+			group: "block",
+			attrs: { text: { default: null }, expanded: { default: null }, isInline: { default: null } },
+		},
+
 		comment_block: {
 			content: "block+",
 			group: "block",

@@ -1,6 +1,12 @@
 export const tokens = {
 	br: { node: "br" },
 
+	cut: {
+		block: "cut",
+		getAttrs: (tok) => {
+			return { ...tok.attrs, isInline: false };
+		},
+	},
 	note: { block: "note", getAttrs: (tok) => tok.attrs },
 	comment_block: { block: "comment_block", getAttrs: (tok) => tok.attrs },
 	comment: { block: "comment", getAttrs: (tok) => tok.attrs },
