@@ -45,6 +45,12 @@ export const tokens = {
 	s: { mark: "s" },
 	em: { mark: "em" },
 	inlineMd: { mark: "inlineMd" },
+	inlineCut: {
+		mark: "inlineCut",
+		getAttrs: (tok) => {
+			return { ...tok.attrs, isInline: true };
+		},
+	},
 
 	strong: { mark: "strong" },
 	link: {

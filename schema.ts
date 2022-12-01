@@ -74,7 +74,12 @@ export const schema = new Schema({
 		cut: {
 			content: "block+",
 			group: "block",
-			attrs: { text: { default: null }, expanded: { default: null }, isInline: { default: null } },
+			attrs: { text: { default: "Раскрыть" }, expanded: { default: true }, isInline: { default: false } },
+		},
+		inlineCut_component: {
+			group: "block",
+			content: "inline*",
+			attrs: { text: { default: "Раскрыть" }, expanded: { default: true }, isInline: { default: false } },
 		},
 
 		comment_block: {
@@ -121,12 +126,6 @@ export const schema = new Schema({
 
 		br: { atom: true, inline: true, group: "inline", selectable: false },
 
-		link_component: {
-			atom: true,
-			inline: true,
-			group: "inline",
-			attrs: { text: { default: null }, href: { default: null } },
-		},
 		inlineMd_component: {
 			atom: true,
 			inline: true,
@@ -149,5 +148,8 @@ export const schema = new Schema({
 		link: { attrs: { href: {}, title: { default: null } }, inclusive: false },
 
 		inlineMd: {},
+		inlineCut: {
+			attrs: { text: { default: "Раскрыть" }, expanded: { default: true }, isInline: { default: true } },
+		},
 	},
 });
