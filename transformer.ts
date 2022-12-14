@@ -69,11 +69,6 @@ export class Transformer {
 				.flat()
 				.filter((n) => n);
 
-		if (node.type === "image") {
-			let attrs = node.attrs;
-			return this._getTextNode(`![${attrs?.alt ?? ""}](${attrs.src}${attrs?.title ? ` "${attrs?.title}"` : ""})`);
-		}
-
 		if (node.type === "blockMd") {
 			const content = node.content;
 			let text = this._markdownFormatter.render({ type: "doc", content }, {});
