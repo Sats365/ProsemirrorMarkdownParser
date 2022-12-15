@@ -1,4 +1,4 @@
-import { imageToken } from "../../../../extensions/markdown/elements/image/edit/imageToken";
+import { imageToken } from "../../../../extensions/markdown/elements/image/edit/model/imageToken";
 import { linkToken } from "../../../../extensions/markdown/elements/link/edit/model/linkToken";
 import Context from "../../Context/Context";
 
