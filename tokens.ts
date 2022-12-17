@@ -1,3 +1,4 @@
+import { drawioToken } from "../../../../extensions/markdown/elements/drawio/edit/model/drawioToken";
 import { imageToken } from "../../../../extensions/markdown/elements/image/edit/model/imageToken";
 import { linkToken } from "../../../../extensions/markdown/elements/link/edit/model/linkToken";
 import Context from "../../Context/Context";
@@ -11,6 +12,7 @@ const getTokensByContext = (context?: Context) => {
 	return {
 		link: linkToken(context),
 		image: imageToken(context),
+		drawio: drawioToken(context),
 	};
 };
 

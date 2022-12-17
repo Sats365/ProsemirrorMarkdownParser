@@ -71,6 +71,11 @@ export const schema = new Schema({
 			attrs: { type: { default: null }, title: { default: null } },
 		},
 
+		drawio: {
+			group: "block",
+			attrs: { src: { default: null } },
+		},
+
 		cut: {
 			content: "block+",
 			group: "block",
