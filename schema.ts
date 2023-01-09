@@ -145,8 +145,7 @@ export const schema = new Schema({
 		em: {},
 		code: {},
 		strong: {},
-		link: { attrs: { href: {}, title: { default: null } }, inclusive: false },
-
+		link: { attrs: { href: {}, hash: {}, resourcePath: {} }, inclusive: false },
 		inlineMd: {},
 		inlineCut: {
 			attrs: { text: { default: "Раскрыть" }, expanded: { default: true }, isInline: { default: true } },
