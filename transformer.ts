@@ -87,6 +87,22 @@ export class Transformer {
 			return null;
 		}
 
+		if (node?.marks) {
+			let inlineMdIndex = node.marks.findIndex((mark) => mark.type === "inlineCut");
+			if (inlineMdIndex !== -1) {
+				node = {
+					type: "inlineCut_component",
+					attrs: node?.marks[inlineMdIndex].attrs,
+					content: [
+						{
+							type: node.type,
+							text: node.text,
+						},
+					],
+				};
+			}
+		}
+
 		return node;
 	}
 
@@ -95,12 +111,37 @@ export class Transformer {
 			.map((t) => this._predTransform(t, parent))
 			.flat()
 			.filter((n) => n);
+		transformTokens = transformTokens
+			.map((t) => this._predTransform2(t, parent))
+			.flat()
+			.filter((n) => n);
 		return transformTokens;
 	}
 
 	private _getTextNode(content?: string, unsetMark?: boolean) {
 		if (unsetMark) return { type: "text", text: content };
 		return { type: "text", marks: [{ type: "inlineMd" }], text: content };
+	}
+
+	private _predTransform2(token: Token, parent?: Token): Token | Token[] {
+		if (token.tag === "cut" && parent?.type === "inline") {
+			if (token.type === "cut_open") {
+				token.type = "inlineCut_open";
+				token.tag = "inlineCut";
+			}
+			if (token.type === "cut_close") {
+				token.type = "inlineCut_close";
+				token.tag = "inlineCut";
+			}
+		}
+
+		if (token?.children)
+			token.children = token.children
+				.map((t) => this._predTransform2(t, token))
+				.flat()
+				.filter((n) => n);
+
+		return token;
 	}
 
 	private _predTransform(token: Token, parent?: Token): Token | Token[] {
