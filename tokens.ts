@@ -1,3 +1,4 @@
+import { imageToken } from "../../../../extensions/markdown/elements/image/edit/model/imageToken";
 import { linkToken } from "../../../../extensions/markdown/elements/link/edit/model/linkToken";
 import Context from "../../Context/Context";
 
@@ -9,6 +10,7 @@ function listIsTight(tokens, i) {
 const getTokensByContext = (context?: Context) => {
 	return {
 		link: linkToken(context),
+		image: imageToken(context),
 	};
 };
 
@@ -49,14 +51,7 @@ export const getTokens = (context?: Context) => {
 		code_block: { block: "code_block", noCloseToken: true },
 		fence: { block: "code_block", getAttrs: (tok) => ({ params: tok.info || "" }), noCloseToken: true },
 		hr: { node: "horizontal_rule" },
-		image: {
-			node: "image",
-			getAttrs: (tok) => ({
-				src: tok.attrGet("src"),
-				title: tok.attrGet("title") || null,
-				alt: (tok.children[0] && tok.children[0].content) || null,
-			}),
-		},
+
 		hardbreak: { node: "hard_break" },
 		s: { mark: "s" },
 		em: { mark: "em" },
