@@ -52,27 +52,20 @@ export class Transformer {
 		if (JSON.stringify(node.content) === JSON.stringify([{ type: "horizontal_rule" }])) {
 			node.content = [{ type: "paragraph", content: [] }];
 		}
-		if (node?.content)
-			node.content = (
-				await Promise.all(
-					node.content.map(
-						async (n, i) =>
-							await this.postTransform(
-								n,
-								i == 0 ? null : node.content[i - 1],
-								i == node.content.length - 1 ? null : node.content[i + 1],
-								context
-							)
+		if (node?.content) {
+			const newContent = [];
+			for (let i = 0; i < node.content.length; i++) {
+				const value = node.content[i];
+				newContent.push(
+					await this.postTransform(
+						value,
+						i == 0 ? null : node.content[i - 1],
+						i == node.content.length - 1 ? null : node.content[i + 1],
+						context
 					)
-				)
-			)
-				.flat()
-				.filter((n) => n);
-
-		if (node.type === "blockMd") {
-			const content = node.content;
-			let text = this._markdownFormatter.render({ type: "doc", content }, {});
-			node = { type: "blockMd", content: [this._getTextNode(text, true)] };
+				);
+			}
+			node.content = newContent.flat().filter((n) => n);
 		}
 
 		if (nextNode?.type === "comment") {
@@ -80,6 +73,12 @@ export class Transformer {
 			nextNode.attrs = { comments: [commentBlock] };
 			nextNode.content = [node];
 			return null;
+		}
+
+		if (node.type === "blockMd") {
+			const content = node.content;
+			let text = this._markdownFormatter.render({ type: "doc", content }, {});
+			node = { type: "blockMd", content: [this._getTextNode(text, true)] };
 		}
 
 		if (node?.marks) {
