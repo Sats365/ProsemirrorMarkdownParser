@@ -45,8 +45,8 @@ export class Transformer {
 
 	async postTransform(
 		node: JSONContent,
-		previousNode?: any,
-		nextNode?: any,
+		previousNode?: JSONContent,
+		nextNode?: JSONContent,
 		context?: Context
 	): Promise<JSONContent> {
 		if (JSON.stringify(node.content) === JSON.stringify([{ type: "horizontal_rule" }])) {
@@ -84,16 +84,44 @@ export class Transformer {
 		if (node?.marks) {
 			let inlineMdIndex = node.marks.findIndex((mark) => mark.type === "inlineCut");
 			if (inlineMdIndex !== -1) {
-				node = {
-					type: "inlineCut_component",
-					attrs: node?.marks[inlineMdIndex].attrs,
-					content: [
-						{
-							type: node.type,
-							text: node.text,
-						},
-					],
-				};
+				let nextInlineMdIndex = -1;
+				if (nextNode?.marks) nextInlineMdIndex = nextNode.marks.findIndex((mark) => mark.type === "inlineCut");
+				if (
+					nextInlineMdIndex !== -1 &&
+					JSON.stringify(node?.marks[inlineMdIndex].attrs) ==
+						JSON.stringify(nextNode?.marks[nextInlineMdIndex].attrs)
+				) {
+					nextNode.content = [
+						{ type: node.type, text: node.text },
+						{ type: nextNode.type, ...(nextNode?.text ? { text: nextNode?.text } : {}) },
+					];
+					nextNode.type = "inlineCut_component";
+					nextNode.attrs = node?.marks[inlineMdIndex].attrs;
+					nextNode.marks = null;
+					node = null;
+				} else {
+					node = {
+						type: "inlineCut_component",
+						attrs: node?.marks[inlineMdIndex].attrs,
+						content: [{ type: node.type, text: node.text }],
+					};
+				}
+			}
+		}
+		if (node?.type == "inlineCut_component" && nextNode?.marks) {
+			let nextInlineMdIndex = nextNode.marks.findIndex((mark) => mark.type === "inlineCut");
+			if (
+				nextInlineMdIndex !== -1 &&
+				JSON.stringify(node?.attrs) == JSON.stringify(nextNode?.marks[nextInlineMdIndex].attrs)
+			) {
+				nextNode.content = [
+					...node.content,
+					{ type: nextNode.type, ...(nextNode?.text ? { text: nextNode?.text } : {}) },
+				];
+				nextNode.type = "inlineCut_component";
+				nextNode.attrs = node?.attrs;
+				nextNode.marks = null;
+				node = null;
 			}
 		}
 
