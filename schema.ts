@@ -35,6 +35,14 @@ export const schema = new Schema({
 		blockquote: { content: "block+", group: "block" },
 		list_item: { content: "paragraph block*", defining: true },
 		bullet_list: { content: "list_item+", group: "block", attrs: { tight: { default: false } } },
+		video: {
+			group: "block",
+			attrs: {
+				title: { default: null },
+				path: { default: null },
+				isLink: { default: true },
+			},
+		},
 		heading: {
 			attrs: { level: { default: 1 } },
 			content: "(text | image)*",
