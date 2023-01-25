@@ -75,6 +75,12 @@ export class Transformer {
 			return null;
 		}
 
+		if (node?.type === "paragraph" && node?.content?.[0]?.type === "image") {
+			const text = node.content?.[2]?.text ?? null;
+			node = node.content[0];
+			if (text) node.attrs.title = text;
+		}
+
 		if (node.type === "blockMd") {
 			const content = node.content;
 			let text = this._markdownFormatter.render({ type: "doc", content }, {});
