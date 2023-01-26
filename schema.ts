@@ -3,6 +3,7 @@ import { Schema } from "prosemirror-model";
 export const schema = new Schema({
 	nodes: {
 		text: { group: "inline" },
+
 		doc: { content: "block+" },
 		horizontal_rule: { group: "block" },
 		table: { content: "tableRow+", group: "block" },
@@ -31,7 +32,6 @@ export const schema = new Schema({
 		tableHeaderRow_simple: { content: "tableHeader_simple+", group: "block" },
 		table_simple: { content: "(tableHeader_simple | tableCell_simple)*", group: "block" },
 		paragraph: { content: "inline*", group: "block" },
-		error: { content: "inline*", group: "block" },
 		blockquote: { content: "block+", group: "block" },
 		list_item: { content: "paragraph block*", defining: true },
 		bullet_list: { content: "list_item+", group: "block", attrs: { tight: { default: false } } },
@@ -45,7 +45,7 @@ export const schema = new Schema({
 		},
 		heading: {
 			attrs: { level: { default: 1 } },
-			content: "(text | image)*",
+			content: "inline*",
 			group: "block",
 			defining: true,
 		},
@@ -138,6 +138,7 @@ export const schema = new Schema({
 		blockMd: { content: "block+", group: "block", defining: true, marks: "" },
 
 		br: { atom: true, inline: true, group: "inline", selectable: false },
+		error: { atom: true, inline: true, group: "inline", selectable: false, attrs: { error: { default: null } } },
 
 		inlineMd_component: {
 			atom: true,

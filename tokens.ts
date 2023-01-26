@@ -22,6 +22,14 @@ export const getTokens = (context?: Context) => {
 	const contextTokens = context ? getTokensByContext(context) : {};
 	return {
 		br: { node: "br" },
+		error: {
+			node: "error",
+			getAttrs: (tok) => {
+				if (tok?.meta?.error?.message)
+					tok.meta.error.message = `У нас не получилось корректно отобразить введенную конструкцию (${tok.meta.error.message}). После синхронизации статьи этот текст удалится автоматически.`;
+				return tok?.meta ?? {};
+			},
+		},
 
 		cut: {
 			block: "cut",
@@ -41,7 +49,7 @@ export const getTokens = (context?: Context) => {
 		tableHeader: { block: "tableHeader", getAttrs: (tok) => tok.attrs },
 		blockquote: { block: "blockquote" },
 		paragraph: { block: "paragraph" },
-		error: { block: "error" },
+
 		list_item: { block: "list_item" },
 		bullet_list: { block: "bullet_list", getAttrs: (_, tokens, i) => ({ tight: listIsTight(tokens, i) }) },
 		ordered_list: {
