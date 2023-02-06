@@ -55,10 +55,11 @@ export class MarkdownSerializer {
 			/// on a node level by specifying a tight attribute on the node.
 			/// Defaults to false.
 			tightLists?: boolean;
-		} = {}
+		} = {},
+		delim: string = ""
 	) {
 		options = Object.assign(this.options, options);
-		let state = new MarkdownSerializerState(this.nodes, this.marks, options);
+		let state = new MarkdownSerializerState(this.nodes, this.marks, options, delim);
 		state.renderContent(content);
 		return state.out;
 	}
@@ -181,9 +182,12 @@ export class MarkdownSerializerState {
 		/// @internal
 		readonly marks: { [mark: string]: MarkSerializerSpec },
 		/// The options passed to the serializer.
-		readonly options: { tightLists?: boolean; escapeExtraCharacters?: RegExp }
+		readonly options: { tightLists?: boolean; escapeExtraCharacters?: RegExp },
+
+		delim: string
 	) {
 		if (typeof this.options.tightLists == "undefined") this.options.tightLists = false;
+		this.delim = delim ?? "";
 	}
 
 	/// @internal
