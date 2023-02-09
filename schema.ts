@@ -44,7 +44,7 @@ export const schema = new Schema({
 			},
 		},
 		heading: {
-			attrs: { level: { default: 1 } },
+			attrs: { level: { default: 1 }, id: { default: null }, isCustomId: { default: false } },
 			content: "(text | image)*",
 			group: "block",
 			defining: true,
