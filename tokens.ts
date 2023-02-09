@@ -1,4 +1,5 @@
 import { drawioToken } from "../../../../extensions/markdown/elements/drawio/edit/model/drawioToken";
+import heading from "../../../../extensions/markdown/elements/heading/edit/model/headingToken";
 import { imageToken } from "../../../../extensions/markdown/elements/image/edit/model/imageToken";
 import { linkToken } from "../../../../extensions/markdown/elements/link/edit/model/linkToken";
 import { video } from "../../../../extensions/markdown/elements/video/edit/model/videoToken";
@@ -13,7 +14,6 @@ const getTokensByContext = (context?: Context) => {
 	return {
 		link: linkToken(context),
 		image: imageToken(context),
-
 		drawio: drawioToken(context),
 	};
 };
@@ -51,7 +51,7 @@ export const getTokens = (context?: Context) => {
 				tight: listIsTight(tokens, i),
 			}),
 		},
-		heading: { block: "heading", getAttrs: (tok) => ({ level: +tok.tag.slice(1) }) },
+
 		code_block: { block: "code_block", noCloseToken: true },
 		fence: { block: "code_block", getAttrs: (tok) => ({ params: tok.info || "" }), noCloseToken: true },
 		hr: { node: "horizontal_rule" },
@@ -71,6 +71,7 @@ export const getTokens = (context?: Context) => {
 		code_inline: { mark: "code", noCloseToken: true },
 
 		video,
+		heading,
 		...contextTokens,
 	};
 };
