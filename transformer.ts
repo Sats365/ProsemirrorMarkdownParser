@@ -152,10 +152,11 @@ export class Transformer {
 
 	private _transformTokenPart1(token: Token, previous?: Token, parent?: Token): Token | Token[] {
 		if (token.type === "annotation") {
-			if (!parent) return null;
+			if (!parent || parent.type !== "inline") return this._getInlineMdTokens(`{${token.info}}`);
 			if (!parent.attrs) parent.attrs = {};
 			if (token.meta?.attributes)
 				token.meta?.attributes.forEach(({ name, value }) => (parent.attrs[name] = value));
+			parent.attrs.info = token.info;
 			return null;
 		}
 
@@ -239,9 +240,13 @@ export class Transformer {
 			}
 		}
 
-		if (token.type == "inline" && token.attrs && previous) {
-			if (!previous.attrs) previous.attrs = {};
-			previous.attrs = { ...token.attrs, ...previous.attrs };
+		if (token.type == "inline" && token.attrs) {
+			if (previous.type !== "heading_open") {
+				token.children.push(this._getInlineMdTokens(`{${token.attrs.info}}`));
+			} else {
+				if (!previous.attrs) previous.attrs = {};
+				previous.attrs = { ...token.attrs, ...previous.attrs };
+			}
 		}
 
 		if (token?.children)
