@@ -6,6 +6,7 @@ import heading from "../../../../extensions/markdown/elements/heading/edit/model
 import imageToken from "../../../../extensions/markdown/elements/image/edit/model/imageToken";
 import linkToken from "../../../../extensions/markdown/elements/link/edit/model/linkToken";
 import bullet_list from "../../../../extensions/markdown/elements/list/edit/models/bulletList/bulletListToken";
+import list_item from "../../../../extensions/markdown/elements/list/edit/models/listItem/listItemToken";
 import ordered_list from "../../../../extensions/markdown/elements/list/edit/models/orderList/orderListToken";
 import video from "../../../../extensions/markdown/elements/video/edit/model/videoToken";
 
@@ -39,7 +40,6 @@ export const getTokens = (context?: Context) => {
 		blockquote: { block: "blockquote" },
 		paragraph: { block: "paragraph" },
 		error: { block: "error" },
-		list_item: { block: "list_item" },
 
 		code_block: { block: "code_block", noCloseToken: true },
 		fence: { block: "code_block", getAttrs: (tok) => ({ params: tok.info || "" }), noCloseToken: true },
@@ -62,6 +62,7 @@ export const getTokens = (context?: Context) => {
 		br,
 		video,
 		heading,
+		list_item,
 		bullet_list,
 		ordered_list,
 		...contextTokens,

@@ -1,13 +1,25 @@
 import { Schema } from "prosemirror-model";
 import br from "../../../../extensions/markdown/elements/br/edit/brSchema";
+import drawio from "../../../../extensions/markdown/elements/drawio/edit/model/drawioSchema";
+import heading from "../../../../extensions/markdown/elements/heading/edit/model/headingSchema";
+import image from "../../../../extensions/markdown/elements/image/edit/model/imageSchema";
+import link from "../../../../extensions/markdown/elements/link/edit/model/linkSchema";
 import bullet_list from "../../../../extensions/markdown/elements/list/edit/models/bulletList/bulletListSchema";
+import list_item from "../../../../extensions/markdown/elements/list/edit/models/listItem/listItemSchema";
 import ordered_list from "../../../../extensions/markdown/elements/list/edit/models/orderList/orderListSchema";
+import video from "../../../../extensions/markdown/elements/video/edit/model/videoSchema";
 
 export const schema = new Schema({
 	nodes: {
 		br,
+		video,
+		image,
+		drawio,
+		heading,
+		list_item,
 		bullet_list,
 		ordered_list,
+
 		text: { group: "inline" },
 		doc: { content: "block+" },
 		horizontal_rule: { group: "block" },
@@ -39,22 +51,6 @@ export const schema = new Schema({
 		paragraph: { content: "inline*", group: "block" },
 		error: { content: "inline*", group: "block" },
 		blockquote: { content: "block+", group: "block" },
-		list_item: { content: "paragraph block*", defining: true },
-
-		video: {
-			group: "block",
-			attrs: {
-				title: { default: null },
-				path: { default: null },
-				isLink: { default: true },
-			},
-		},
-		heading: {
-			attrs: { level: { default: 1 }, id: { default: null }, isCustomId: { default: false } },
-			content: "(text | image)*",
-			group: "block",
-			defining: true,
-		},
 
 		code_block: {
 			marks: "",
@@ -67,22 +63,10 @@ export const schema = new Schema({
 
 		hard_break: { inline: true, group: "inline", selectable: false },
 
-		image: {
-			inline: true,
-			group: "inline",
-			draggable: true,
-			attrs: { src: {}, alt: { default: null }, title: { default: null } },
-		},
-
 		note: {
 			content: "block+",
 			group: "block",
 			attrs: { type: { default: null }, title: { default: null } },
-		},
-
-		drawio: {
-			group: "block",
-			attrs: { src: { default: null }, title: { default: null } },
 		},
 
 		cut: {
@@ -153,11 +137,11 @@ export const schema = new Schema({
 		},
 	},
 	marks: {
+		link,
 		s: {},
 		em: {},
 		code: {},
 		strong: {},
-		link: { attrs: { href: {}, hash: {}, resourcePath: {} }, inclusive: false },
 		inlineMd: {},
 		inlineCut: {
 			attrs: { text: { default: "Раскрыть" }, expanded: { default: true }, isInline: { default: true } },
