@@ -1,7 +1,13 @@
 import { Schema } from "prosemirror-model";
+import br from "../../../../extensions/markdown/elements/br/edit/brSchema";
+import bullet_list from "../../../../extensions/markdown/elements/list/edit/models/bulletList/bulletListSchema";
+import ordered_list from "../../../../extensions/markdown/elements/list/edit/models/orderList/orderListSchema";
 
 export const schema = new Schema({
 	nodes: {
+		br,
+		bullet_list,
+		ordered_list,
 		text: { group: "inline" },
 		doc: { content: "block+" },
 		horizontal_rule: { group: "block" },
@@ -34,7 +40,7 @@ export const schema = new Schema({
 		error: { content: "inline*", group: "block" },
 		blockquote: { content: "block+", group: "block" },
 		list_item: { content: "paragraph block*", defining: true },
-		bullet_list: { content: "list_item+", group: "block", attrs: { tight: { default: false } } },
+
 		video: {
 			group: "block",
 			attrs: {
@@ -57,11 +63,6 @@ export const schema = new Schema({
 			group: "block",
 			content: "text*",
 			attrs: { params: { default: "" } },
-		},
-		ordered_list: {
-			group: "block",
-			content: "list_item+",
-			attrs: { order: { default: 1 }, tight: { default: false } },
 		},
 
 		hard_break: { inline: true, group: "inline", selectable: false },
@@ -136,8 +137,6 @@ export const schema = new Schema({
 		},
 
 		blockMd: { content: "block+", group: "block", defining: true, marks: "" },
-
-		br: { atom: true, inline: true, group: "inline", selectable: false },
 
 		inlineMd_component: {
 			atom: true,
