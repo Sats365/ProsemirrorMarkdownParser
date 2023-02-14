@@ -11,12 +11,12 @@ import { schema } from "./schema";
 export class Transformer {
 	constructor(private _schemes: Record<string, Schema>, private _markdownFormatter: MarkdownFormatter) {}
 
-	transformMdComponents(
+	finalTransform(
 		node: JSONContent,
 		renderer: (content: string, context?: Context, parserOptions?: ParserOptions) => RenderableTreeNodes,
 		context?: Context
 	) {
-		if (node?.content) node.content = node.content.map((n) => this.transformMdComponents(n, renderer, context));
+		if (node?.content) node.content = node.content.map((n) => this.finalTransform(n, renderer, context));
 		if (node?.marks) {
 			let inlineMdIndex = node.marks.findIndex((mark) => mark.type === "inlineMd");
 			if (inlineMdIndex !== -1) {
@@ -43,7 +43,7 @@ export class Transformer {
 		return node;
 	}
 
-	async transformTree(
+	async postTransform(
 		node: JSONContent,
 		previousNode?: JSONContent,
 		nextNode?: JSONContent,
@@ -57,7 +57,7 @@ export class Transformer {
 			for (let i = 0; i < node.content.length; i++) {
 				const value = node.content[i];
 				newContent.push(
-					await this.transformTree(
+					await this.postTransform(
 						value,
 						i == 0 ? null : node.content[i - 1],
 						i == node.content.length - 1 ? null : node.content[i + 1],
@@ -134,34 +134,47 @@ export class Transformer {
 		return node;
 	}
 
-	transformToken(tokens: Token[]): Token[] {
-		tokens = this._filterTokens(
-			tokens.map((t, idx) => this._transformTokenPart1(t, idx == 0 ? null : tokens[idx - 1]))
-		);
-
-		tokens = this._filterTokens(
-			tokens.map((t, idx) => this._transformTokenPart2(t, idx == 0 ? null : tokens[idx - 1]))
-		);
-
-		return tokens;
+	predTransform(token: Token[], parent?: Token): Token[] {
+		let transformTokens = token
+			.map((t) => this._predTransform(t, parent))
+			.flat()
+			.filter((n) => n);
+		transformTokens = transformTokens
+			.map((t) => this._predTransform2(t, parent))
+			.flat()
+			.filter((n) => n);
+		return transformTokens;
 	}
 
-	private _filterTokens(tokens: (Token | Token[])[]): Token[] {
-		return tokens.flat().filter((n) => n);
+	private _getTextNode(content?: string, unsetMark?: boolean) {
+		if (unsetMark) return { type: "text", text: content };
+		return { type: "text", marks: [{ type: "inlineMd" }], text: content };
 	}
 
-	private _transformTokenPart1(token: Token, previous?: Token, parent?: Token): Token | Token[] {
-		if (token.type === "annotation") {
-			if (!parent || parent.type !== "inline") return this._getInlineMdTokens(`{${token.info}}`);
-			if (!parent.attrs) parent.attrs = {};
-			if (token.meta?.attributes)
-				token.meta?.attributes.forEach(({ name, value }) => (parent.attrs[name] = value));
-			parent.attrs.info = token.info;
-			return null;
+	private _predTransform2(token: Token, parent?: Token): Token | Token[] {
+		if (token.tag === "cut" && parent?.type === "inline") {
+			if (token.type === "cut_open") {
+				token.type = "inlineCut_open";
+				token.tag = "inlineCut";
+			}
+			if (token.type === "cut_close") {
+				token.type = "inlineCut_close";
+				token.tag = "inlineCut";
+			}
 		}
 
-		if (token.type === "variable") return this._getInlineMdTokens(`{% ${token.info} %}`);
+		if (token?.children)
+			token.children = token.children
+				.map((t) => this._predTransform2(t, token))
+				.flat()
+				.filter((n) => n);
 
+		return token;
+	}
+
+	private _predTransform(token: Token, parent?: Token): Token | Token[] {
+		if (token.type === "annotation") return this._getInlineMdTokens(`{${token.info}}`);
+		if (token.type === "variable") return this._getInlineMdTokens(`{% ${token.info} %}`);
 		if (token.tag) {
 			if (token.tag === "tbody" || token.tag === "thead") return null;
 			if (token.tag === "tr") {
@@ -177,7 +190,6 @@ export class Transformer {
 				token.tag = "tableHeader";
 			}
 		}
-
 		if (token.type === "tag" || token.type === "tag_open" || token.type === "tag_close") {
 			let attrs = {};
 			if (token.meta?.attributes) token.meta?.attributes.forEach(({ name, value }) => (attrs[name] = value));
@@ -214,54 +226,10 @@ export class Transformer {
 
 			if (token.type === "tag_open") newNode.type = newNode.type + "_open";
 			if (token.type === "tag_close") newNode.type = newNode.type + "_close";
-
 			return newNode;
 		}
-
-		if (token?.children)
-			token.children = this._filterTokens(
-				token.children.map((t, idx) =>
-					this._transformTokenPart1(t, idx == 0 ? null : token.children[idx - 1], token)
-				)
-			);
-
+		if (token?.children) token.children = this.predTransform(token.children, token);
 		return token;
-	}
-
-	private _transformTokenPart2(token: Token, previous?: Token, parent?: Token): Token | Token[] {
-		if (token.tag === "cut" && parent?.type === "inline") {
-			if (token.type === "cut_open") {
-				token.type = "inlineCut_open";
-				token.tag = "inlineCut";
-			}
-			if (token.type === "cut_close") {
-				token.type = "inlineCut_close";
-				token.tag = "inlineCut";
-			}
-		}
-
-		if (token.type == "inline" && token.attrs) {
-			if (previous.type !== "heading_open") {
-				token.children.push(this._getInlineMdTokens(`{${token.attrs.info}}`));
-			} else {
-				if (!previous.attrs) previous.attrs = {};
-				previous.attrs = { ...token.attrs, ...previous.attrs };
-			}
-		}
-
-		if (token?.children)
-			token.children = this._filterTokens(
-				token.children.map((t, idx) =>
-					this._transformTokenPart2(t, idx == 0 ? null : token.children[idx - 1], token)
-				)
-			);
-
-		return token;
-	}
-
-	private _getTextNode(content?: string, unsetMark?: boolean) {
-		if (unsetMark) return { type: "text", text: content };
-		return { type: "text", marks: [{ type: "inlineMd" }], text: content };
 	}
 
 	private _getParagraphTokens(content?: string, children?: any[]) {
