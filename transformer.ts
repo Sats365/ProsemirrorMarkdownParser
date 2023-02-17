@@ -49,7 +49,10 @@ export class Transformer {
 		nextNode?: JSONContent,
 		context?: Context
 	): Promise<JSONContent> {
-		if (JSON.stringify(node.content) === JSON.stringify([{ type: "horizontal_rule" }])) {
+		if (
+			JSON.stringify(node.content) ===
+			JSON.stringify([{ type: "video", attrs: { title: null, path: null, isLink: true } }])
+		) {
 			node.content = [{ type: "paragraph", content: [] }];
 		}
 		if (node?.content) {
