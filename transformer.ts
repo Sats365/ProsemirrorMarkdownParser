@@ -49,12 +49,6 @@ export class Transformer {
 		nextNode?: JSONContent,
 		context?: Context
 	): Promise<JSONContent> {
-		if (
-			JSON.stringify(node.content) ===
-			JSON.stringify([{ type: "video", attrs: { title: null, path: null, isLink: true } }])
-		) {
-			node.content = [{ type: "paragraph", content: [] }];
-		}
 		if (node?.content) {
 			const newContent = [];
 			for (let i = 0; i < node.content.length; i++) {
@@ -138,6 +132,13 @@ export class Transformer {
 	}
 
 	transformToken(tokens: Token[]): Token[] {
+		if (tokens.length === 0) {
+			return [
+				{ type: "paragraph_open", tag: "p" },
+				{ type: "paragraph_close", tag: "p" },
+			];
+		}
+
 		tokens = this._filterTokens(
 			tokens.map((t, idx) => this._transformTokenPart1(t, idx == 0 ? null : tokens[idx - 1]))
 		);
@@ -232,6 +233,13 @@ export class Transformer {
 	}
 
 	private _transformTokenPart2(token: Token, previous?: Token, parent?: Token): Token | Token[] {
+		if (token.type.includes("_close") && previous.type.includes("_open")) {
+			const tokenTypeName = token.type.match(/(.*?)_close/)?.[1];
+			if (tokenTypeName && tokenTypeName === previous.type.match(/(.*?)_open/)?.[1]) {
+				return [{ type: "paragraph_open", tag: "p" }, { type: "paragraph_close", tag: "p" }, token];
+			}
+		}
+
 		if (token.tag === "cut" && parent?.type === "inline") {
 			if (token.type === "cut_open") {
 				token.type = "inlineCut_open";
