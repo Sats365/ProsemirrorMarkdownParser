@@ -1,15 +1,18 @@
 import { JSONContent } from "@tiptap/core";
 import Token from "markdown-it/lib/token";
-import { transformNodeToModel } from "../../../Comments/transformer/Transformer";
 import Context from "../../Context/Context";
 import { RenderableTreeNodes, Schema, SchemaType, Tag } from "../../Parser/Markdoc";
 import { ParserOptions } from "../../Parser/Parser";
 import MarkdownFormatter from "../Formatter/Formatter";
 import { getSquareFormatter } from "../Formatter/Formatters/SquareFormatter";
+import NodeTransformerFunc from "./NodeTransformerFunc";
 import { schema } from "./schema";
 
 export class Transformer {
-	constructor(private _schemes: Record<string, Schema>, private _markdownFormatter: MarkdownFormatter) {}
+	constructor(
+		private _schemes: Record<string, Schema>,
+		private _nodeTransformerFuncs: NodeTransformerFunc[]
+	) {}
 
 	transformMdComponents(
 		node: JSONContent,
@@ -65,67 +68,9 @@ export class Transformer {
 			node.content = newContent.flat().filter((n) => n);
 		}
 
-		if (nextNode?.type === "comment") {
-			const commentBlock = await transformNodeToModel(nextNode, context);
-			nextNode.attrs = { comments: [commentBlock] };
-			nextNode.content = [node];
-			return null;
-		}
-
-		if (node?.type === "paragraph" && node?.content?.[0]?.type === "image") {
-			const text = node.content?.[2]?.text ?? null;
-			node = node.content[0];
-			if (text) node.attrs.title = text;
-		}
-
-		if (node.type === "blockMd") {
-			const content = node.content;
-			let text = this._markdownFormatter.render({ type: "doc", content }, {});
-			node = { type: "blockMd", content: [this._getTextNode(text, true)] };
-		}
-
-		if (node?.marks) {
-			let inlineMdIndex = node.marks.findIndex((mark) => mark.type === "inlineCut");
-			if (inlineMdIndex !== -1) {
-				let nextInlineMdIndex = -1;
-				if (nextNode?.marks) nextInlineMdIndex = nextNode.marks.findIndex((mark) => mark.type === "inlineCut");
-				if (
-					nextInlineMdIndex !== -1 &&
-					JSON.stringify(node?.marks[inlineMdIndex].attrs) ==
-						JSON.stringify(nextNode?.marks[nextInlineMdIndex].attrs)
-				) {
-					nextNode.content = [
-						{ type: node.type, text: node.text },
-						{ type: nextNode.type, ...(nextNode?.text ? { text: nextNode?.text } : {}) },
-					];
-					nextNode.type = "inlineCut_component";
-					nextNode.attrs = node?.marks[inlineMdIndex].attrs;
-					nextNode.marks = null;
-					node = null;
-				} else {
-					node = {
-						type: "inlineCut_component",
-						attrs: node?.marks[inlineMdIndex].attrs,
-						content: [{ type: node.type, text: node.text }],
-					};
-				}
-			}
-		}
-		if (node?.type == "inlineCut_component" && nextNode?.marks) {
-			let nextInlineMdIndex = nextNode.marks.findIndex((mark) => mark.type === "inlineCut");
-			if (
-				nextInlineMdIndex !== -1 &&
-				JSON.stringify(node?.attrs) == JSON.stringify(nextNode?.marks[nextInlineMdIndex].attrs)
-			) {
-				nextNode.content = [
-					...node.content,
-					{ type: nextNode.type, ...(nextNode?.text ? { text: nextNode?.text } : {}) },
-				];
-				nextNode.type = "inlineCut_component";
-				nextNode.attrs = node?.attrs;
-				nextNode.marks = null;
-				node = null;
-			}
+		for (const nodeTransformerFunc of this._nodeTransformerFuncs) {
+			const res = await nodeTransformerFunc(node, previousNode, nextNode, context);
+			if (res && res.isSet) return res.value;
 		}
 
 		return node;
@@ -268,11 +213,6 @@ export class Transformer {
 			);
 
 		return token;
-	}
-
-	private _getTextNode(content?: string, unsetMark?: boolean) {
-		if (unsetMark) return { type: "text", text: content };
-		return { type: "text", marks: [{ type: "inlineMd" }], text: content };
 	}
 
 	private _getParagraphTokens(content?: string, children?: any[]) {
