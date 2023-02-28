@@ -1,4 +1,4 @@
-import { Node, Mark } from "prosemirror-model";
+import { Mark, Node } from "prosemirror-model";
 
 type MarkSerializerSpec = {
 	/// The string that should appear before a piece of content marked
@@ -55,10 +55,11 @@ export class MarkdownSerializer {
 			/// on a node level by specifying a tight attribute on the node.
 			/// Defaults to false.
 			tightLists?: boolean;
-		} = {}
+		} = {},
+		delim: string = ""
 	) {
 		options = Object.assign(this.options, options);
-		let state = new MarkdownSerializerState(this.nodes, this.marks, options);
+		let state = new MarkdownSerializerState(this.nodes, this.marks, options, delim);
 		state.renderContent(content);
 		return state.out;
 	}
@@ -181,9 +182,12 @@ export class MarkdownSerializerState {
 		/// @internal
 		readonly marks: { [mark: string]: MarkSerializerSpec },
 		/// The options passed to the serializer.
-		readonly options: { tightLists?: boolean; escapeExtraCharacters?: RegExp }
+		readonly options: { tightLists?: boolean; escapeExtraCharacters?: RegExp },
+
+		delim: string
 	) {
 		if (typeof this.options.tightLists == "undefined") this.options.tightLists = false;
+		this.delim = delim ?? "";
 	}
 
 	/// @internal
@@ -376,7 +380,7 @@ export class MarkdownSerializerState {
 	/// indentation added to all lines except the first in an item,
 	/// `firstDelim` is a function going from an item index to a
 	/// delimiter for the first line of the item.
-	renderList(node: Node, delim: string, firstDelim: (index: number) => string) {
+	renderList(node: Node, delim: (index: number) => string, firstDelim: (index: number) => string) {
 		if (this.closed && this.closed.type == node.type) this.flushClose(3);
 		else if (this.inTightList) this.flushClose(1);
 
@@ -385,7 +389,7 @@ export class MarkdownSerializerState {
 		this.inTightList = isTight;
 		node.forEach((child, _, i) => {
 			if (i && isTight) this.flushClose(1);
-			this.wrapBlock(delim, firstDelim(i), node, () => this.render(child, node, i));
+			this.wrapBlock(delim(i), firstDelim(i), node, () => this.render(child, node, i));
 		});
 		this.inTightList = prevTight;
 	}
