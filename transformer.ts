@@ -3,16 +3,12 @@ import Token from "markdown-it/lib/token";
 import Context from "../../Context/Context";
 import { RenderableTreeNodes, Schema, SchemaType, Tag } from "../../Parser/Markdoc";
 import { ParserOptions } from "../../Parser/Parser";
-import MarkdownFormatter from "../Formatter/Formatter";
 import { getSquareFormatter } from "../Formatter/Formatters/SquareFormatter";
 import NodeTransformerFunc from "./NodeTransformerFunc";
 import { schema } from "./schema";
 
 export class Transformer {
-	constructor(
-		private _schemes: Record<string, Schema>,
-		private _nodeTransformerFuncs: NodeTransformerFunc[]
-	) {}
+	constructor(private _schemes: Record<string, Schema>, private _nodeTransformerFuncs: NodeTransformerFunc[]) {}
 
 	transformMdComponents(
 		node: JSONContent,
