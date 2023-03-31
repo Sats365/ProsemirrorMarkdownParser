@@ -11,9 +11,8 @@ function listIsTight(tokens, i) {
 
 const getTokensByContext = (context?: Context) => {
 	return {
-		link: linkToken(context),
+		
 		image: imageToken(context),
-
 		drawio: drawioToken(context),
 	};
 };
@@ -21,6 +20,7 @@ const getTokensByContext = (context?: Context) => {
 export const getTokens = (context?: Context) => {
 	const contextTokens = context ? getTokensByContext(context) : {};
 	return {
+		link: linkToken(context),
 		br: { node: "br" },
 
 		cut: {
