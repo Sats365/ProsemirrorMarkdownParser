@@ -1,8 +1,10 @@
+import diagramsToken from "../../../../extensions/markdown/elements/diagrams/edit/models/diagramsToken";
 import c4DiagramToken from "../../../../extensions/markdown/elements/diagrams/models/c4Diagram/c4DiagramToken";
 import mermaidToken from "../../../../extensions/markdown/elements/diagrams/models/mermaid/mermaidToken";
 import plantUmlToken from "../../../../extensions/markdown/elements/diagrams/models/plantUml/plantUmlToken";
 import tsDiagramToken from "../../../../extensions/markdown/elements/diagrams/models/tsDiagram/tsDiagramToken";
 import drawioToken from "../../../../extensions/markdown/elements/drawio/edit/model/drawioToken";
+import codeBlockToken from "../../../../extensions/markdown/elements/fence/edit/model/codeBlockToken";
 import imageToken from "../../../../extensions/markdown/elements/image/edit/model/imageToken";
 import linkToken from "../../../../extensions/markdown/elements/link/edit/model/linkToken";
 import video from "../../../../extensions/markdown/elements/video/edit/model/videoToken";
@@ -24,7 +26,10 @@ export const getTokens = (context?: Context) => {
 	const contextTokens = context ? getTokensByContext(context) : {};
 	return {
 		link: linkToken(context),
+		code_block: codeBlockToken,
+
 		mermaid: mermaidToken,
+		diagrams: diagramsToken,
 		"plant-uml": plantUmlToken,
 		"c4-diagram": c4DiagramToken,
 		"ts-diagram": tsDiagramToken,
@@ -60,7 +65,7 @@ export const getTokens = (context?: Context) => {
 			}),
 		},
 		heading: { block: "heading", getAttrs: (tok) => ({ level: +tok.tag.slice(1) }) },
-		code_block: { block: "code_block", noCloseToken: true },
+
 		fence: { block: "code_block", getAttrs: (tok) => ({ params: tok.info || "" }), noCloseToken: true },
 		hr: { node: "horizontal_rule" },
 

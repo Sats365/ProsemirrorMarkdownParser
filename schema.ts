@@ -2,6 +2,9 @@ import { Schema } from "prosemirror-model";
 
 import answer from "../../../../extensions/markdown/elements/answer/edit/answerSchema";
 import doc from "../../../../extensions/markdown/elements/aricle/edit/doc";
+import code_block from "../../../../extensions/markdown/elements/fence/edit/model/codeBlockSchema";
+
+import diagrams from "../../../../extensions/markdown/elements/diagrams/edit/models/diagramsSchema";
 import c4Diagram from "../../../../extensions/markdown/elements/diagrams/models/c4Diagram/c4DiagramSchema";
 import mermaid from "../../../../extensions/markdown/elements/diagrams/models/mermaid/mermaidSchema";
 import plantUml from "../../../../extensions/markdown/elements/diagrams/models/plantUml/plantUmlSchema";
@@ -11,6 +14,9 @@ export const schema = new Schema({
 	nodes: {
 		doc,
 		answer,
+		code_block,
+
+		diagrams,
 		mermaid,
 		"plant-uml": plantUml,
 		"c4-diagram": c4Diagram,
@@ -63,14 +69,6 @@ export const schema = new Schema({
 			defining: true,
 		},
 
-		code_block: {
-			marks: "",
-			code: true,
-			defining: true,
-			group: "block",
-			content: "text*",
-			attrs: { params: { default: "" } },
-		},
 		ordered_list: {
 			group: "block",
 			content: "list_item+",
