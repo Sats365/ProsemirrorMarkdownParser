@@ -174,14 +174,14 @@ export class Transformer {
 	}
 
 	private _transformTokenPart2(token: Token, previous?: Token, parent?: Token): Token | Token[] {
-		if (token.type.includes("_close") && previous.type.includes("_open")) {
+		if (token && token?.type?.includes("_close") && previous?.type?.includes("_open")) {
 			const tokenTypeName = token.type.match(/(.*?)_close/)?.[1];
 			if (tokenTypeName && tokenTypeName === previous.type.match(/(.*?)_open/)?.[1]) {
 				return [{ type: "paragraph_open", tag: "p" }, { type: "paragraph_close", tag: "p" }, token];
 			}
 		}
 
-		if (token.tag === "cut" && parent?.type === "inline") {
+		if (token && token.tag === "cut" && parent?.type === "inline") {
 			if (token.type === "cut_open") {
 				token.type = "inlineCut_open";
 				token.tag = "inlineCut";
@@ -192,7 +192,7 @@ export class Transformer {
 			}
 		}
 
-		if (token.type == "inline" && token.attrs) {
+		if (token && token.type == "inline" && token.attrs) {
 			if (previous.type !== "heading_open") {
 				token.children.push(this._getInlineMdTokens(`{${token.attrs.info}}`));
 			} else {
