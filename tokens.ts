@@ -11,7 +11,6 @@ function listIsTight(tokens, i) {
 
 const getTokensByContext = (context?: Context) => {
 	return {
-		
 		image: imageToken(context),
 		drawio: drawioToken(context),
 	};

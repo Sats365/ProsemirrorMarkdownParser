@@ -1,9 +1,13 @@
 import { Schema } from "prosemirror-model";
 
+import answer from "../../../../extensions/markdown/elements/answer/edit/answerSchema";
+import doc from "../../../../extensions/markdown/elements/aricle/edit/doc";
+
 export const schema = new Schema({
 	nodes: {
+		doc,
+		answer,
 		text: { group: "inline" },
-		doc: { content: "block+" },
 		horizontal_rule: { group: "block" },
 		table: { content: "tableRow+", group: "block" },
 		tableRow: { content: "(tableCell | tableHeader)*", group: "block" },
@@ -115,15 +119,6 @@ export const schema = new Schema({
 			content: "block+",
 			attrs: {
 				style: { default: null },
-			},
-		},
-
-		answer: {
-			content: "block+",
-			group: "block",
-			attrs: {
-				mail: { default: null },
-				dateTime: { default: null },
 			},
 		},
 
