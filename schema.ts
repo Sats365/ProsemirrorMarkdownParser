@@ -2,11 +2,20 @@ import { Schema } from "prosemirror-model";
 
 import answer from "../../../../extensions/markdown/elements/answer/edit/answerSchema";
 import doc from "../../../../extensions/markdown/elements/aricle/edit/doc";
+import c4Diagram from "../../../../extensions/markdown/elements/diagrams/models/c4Diagram/c4DiagramSchema";
+import mermaid from "../../../../extensions/markdown/elements/diagrams/models/mermaid/mermaidSchema";
+import plantUml from "../../../../extensions/markdown/elements/diagrams/models/plantUml/plantUmlSchema";
+import tsDiagram from "../../../../extensions/markdown/elements/diagrams/models/tsDiagram/tsDiagramSchema";
 
 export const schema = new Schema({
 	nodes: {
 		doc,
 		answer,
+		mermaid,
+		"plant-uml": plantUml,
+		"c4-diagram": c4Diagram,
+		"ts-diagram": tsDiagram,
+
 		text: { group: "inline" },
 		horizontal_rule: { group: "block" },
 		table: { content: "tableRow+", group: "block" },

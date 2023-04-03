@@ -1,3 +1,7 @@
+import c4DiagramToken from "../../../../extensions/markdown/elements/diagrams/models/c4Diagram/c4DiagramToken";
+import mermaidToken from "../../../../extensions/markdown/elements/diagrams/models/mermaid/mermaidToken";
+import plantUmlToken from "../../../../extensions/markdown/elements/diagrams/models/plantUml/plantUmlToken";
+import tsDiagramToken from "../../../../extensions/markdown/elements/diagrams/models/tsDiagram/tsDiagramToken";
 import drawioToken from "../../../../extensions/markdown/elements/drawio/edit/model/drawioToken";
 import imageToken from "../../../../extensions/markdown/elements/image/edit/model/imageToken";
 import linkToken from "../../../../extensions/markdown/elements/link/edit/model/linkToken";
@@ -20,6 +24,11 @@ export const getTokens = (context?: Context) => {
 	const contextTokens = context ? getTokensByContext(context) : {};
 	return {
 		link: linkToken(context),
+		mermaid: mermaidToken,
+		"plant-uml": plantUmlToken,
+		"c4-diagram": c4DiagramToken,
+		"ts-diagram": tsDiagramToken,
+
 		br: { node: "br" },
 
 		cut: {
