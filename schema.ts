@@ -4,11 +4,11 @@ import answer from "../../../../extensions/markdown/elements/answer/edit/answerS
 import doc from "../../../../extensions/markdown/elements/aricle/edit/doc";
 import code_block from "../../../../extensions/markdown/elements/fence/edit/model/codeBlockSchema";
 
+import c4Diagram from "../../../../extensions/markdown/elements/diagrams/diagrams/c4Diagram/model/c4DiagramSchema";
+import mermaid from "../../../../extensions/markdown/elements/diagrams/diagrams/mermaid/model/mermaidSchema";
+import plantUml from "../../../../extensions/markdown/elements/diagrams/diagrams/plantUml/model/plantUmlSchema";
+import tsDiagram from "../../../../extensions/markdown/elements/diagrams/diagrams/tsDiagram/model/tsDiagramSchema";
 import diagrams from "../../../../extensions/markdown/elements/diagrams/edit/models/diagramsSchema";
-import c4Diagram from "../../../../extensions/markdown/elements/diagrams/models/c4Diagram/c4DiagramSchema";
-import mermaid from "../../../../extensions/markdown/elements/diagrams/models/mermaid/mermaidSchema";
-import plantUml from "../../../../extensions/markdown/elements/diagrams/models/plantUml/plantUmlSchema";
-import tsDiagram from "../../../../extensions/markdown/elements/diagrams/models/tsDiagram/tsDiagramSchema";
 
 export const schema = new Schema({
 	nodes: {

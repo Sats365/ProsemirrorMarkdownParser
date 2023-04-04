@@ -1,8 +1,9 @@
+import c4DiagramToken from "../../../../extensions/markdown/elements/diagrams/diagrams/c4Diagram/model/c4DiagramToken";
+import mermaidToken from "../../../../extensions/markdown/elements/diagrams/diagrams/mermaid/model/mermaidToken";
+import plantUmlToken from "../../../../extensions/markdown/elements/diagrams/diagrams/plantUml/model/plantUmlToken";
+import tsDiagramToken from "../../../../extensions/markdown/elements/diagrams/diagrams/tsDiagram/model/tsDiagramToken";
+
 import diagramsToken from "../../../../extensions/markdown/elements/diagrams/edit/models/diagramsToken";
-import c4DiagramToken from "../../../../extensions/markdown/elements/diagrams/models/c4Diagram/c4DiagramToken";
-import mermaidToken from "../../../../extensions/markdown/elements/diagrams/models/mermaid/mermaidToken";
-import plantUmlToken from "../../../../extensions/markdown/elements/diagrams/models/plantUml/plantUmlToken";
-import tsDiagramToken from "../../../../extensions/markdown/elements/diagrams/models/tsDiagram/tsDiagramToken";
 import drawioToken from "../../../../extensions/markdown/elements/drawio/edit/model/drawioToken";
 import codeBlockToken from "../../../../extensions/markdown/elements/fence/edit/model/codeBlockToken";
 import imageToken from "../../../../extensions/markdown/elements/image/edit/model/imageToken";
