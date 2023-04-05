@@ -1,7 +1,7 @@
-import c4DiagramToken from "../../../../extensions/markdown/elements/diagrams/diagrams/c4Diagram/model/c4DiagramToken";
-import mermaidToken from "../../../../extensions/markdown/elements/diagrams/diagrams/mermaid/model/mermaidToken";
-import plantUmlToken from "../../../../extensions/markdown/elements/diagrams/diagrams/plantUml/model/plantUmlToken";
-import tsDiagramToken from "../../../../extensions/markdown/elements/diagrams/diagrams/tsDiagram/model/tsDiagramToken";
+import c4DiagramToken from "../../../../extensions/markdown/elements/diagrams/diagrams/c4Diagram/c4DiagramToken";
+import mermaidToken from "../../../../extensions/markdown/elements/diagrams/diagrams/mermaid/mermaidToken";
+import plantUmlToken from "../../../../extensions/markdown/elements/diagrams/diagrams/plantUml/plantUmlToken";
+import tsDiagramToken from "../../../../extensions/markdown/elements/diagrams/diagrams/tsDiagram/tsDiagramToken";
 
 import diagramsToken from "../../../../extensions/markdown/elements/diagrams/edit/models/diagramsToken";
 import drawioToken from "../../../../extensions/markdown/elements/drawio/edit/model/drawioToken";
