@@ -1,7 +1,7 @@
 import { Schema } from "prosemirror-model";
 
 import answer from "../../../../extensions/markdown/elements/answer/edit/answerSchema";
-import doc from "../../../../extensions/markdown/elements/article/edit/doc";
+import doc from "../../../../extensions/markdown/elements/aricle/edit/doc";
 import code_block from "../../../../extensions/markdown/elements/fence/edit/model/codeBlockSchema";
 
 import c4Diagram from "../../../../extensions/markdown/elements/diagrams/diagrams/c4Diagram/c4DiagramSchema";
