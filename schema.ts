@@ -1,9 +1,28 @@
 import { Schema } from "prosemirror-model";
 
+import answer from "../../../../extensions/markdown/elements/answer/edit/answerSchema";
+import doc from "../../../../extensions/markdown/elements/article/edit/doc";
+import code_block from "../../../../extensions/markdown/elements/fence/edit/model/codeBlockSchema";
+
+import c4Diagram from "../../../../extensions/markdown/elements/diagrams/diagrams/c4Diagram/c4DiagramSchema";
+import mermaid from "../../../../extensions/markdown/elements/diagrams/diagrams/mermaid/mermaidSchema";
+import plantUml from "../../../../extensions/markdown/elements/diagrams/diagrams/plantUml/plantUmlSchema";
+import tsDiagram from "../../../../extensions/markdown/elements/diagrams/diagrams/tsDiagram/tsDiagramSchema";
+import diagrams from "../../../../extensions/markdown/elements/diagrams/edit/models/diagramsSchema";
+
 export const schema = new Schema({
 	nodes: {
+		doc,
+		answer,
+		code_block,
+
+		diagrams,
+		mermaid,
+		"plant-uml": plantUml,
+		"c4-diagram": c4Diagram,
+		"ts-diagram": tsDiagram,
+
 		text: { group: "inline" },
-		doc: { content: "block+" },
 		horizontal_rule: { group: "block" },
 		table: { content: "tableRow+", group: "block" },
 		tableRow: { content: "(tableCell | tableHeader)*", group: "block" },
@@ -50,14 +69,6 @@ export const schema = new Schema({
 			defining: true,
 		},
 
-		code_block: {
-			marks: "",
-			code: true,
-			defining: true,
-			group: "block",
-			content: "text*",
-			attrs: { params: { default: "" } },
-		},
 		ordered_list: {
 			group: "block",
 			content: "list_item+",
@@ -115,15 +126,6 @@ export const schema = new Schema({
 			content: "block+",
 			attrs: {
 				style: { default: null },
-			},
-		},
-
-		answer: {
-			content: "block+",
-			group: "block",
-			attrs: {
-				mail: { default: null },
-				dateTime: { default: null },
 			},
 		},
 
