@@ -1,6 +1,6 @@
+import { parser } from "../../../../app";
 import getNodeElementRenderModels from "../../../../extensions/markdown/core/getRenderElemets/getNodeElementRenderModels";
 import getTagElementRenderModels from "../../../../extensions/markdown/core/getRenderElemets/getTagElementRenderModels";
-import { parser } from "../../../../pages/app";
 import { catalogMarkdown, emptyArticleItemRef } from "../../../Library/test/data/markdown";
 import Context from "../../Context/Context";
 import TestContext from "../../Context/TestContext";
