@@ -9,21 +9,21 @@ import codeBlockToken from "../../../../extensions/markdown/elements/fence/edit/
 import imageToken from "../../../../extensions/markdown/elements/image/edit/model/imageToken";
 import linkToken from "../../../../extensions/markdown/elements/link/edit/model/linkToken";
 import video from "../../../../extensions/markdown/elements/video/edit/model/videoToken";
-import Context from "../../Context/Context";
+import ParserContext from "../../ParserContext/ParserContext";
 
 function listIsTight(tokens, i) {
 	while (++i < tokens.length) if (tokens[i].type != "list_item_open") return tokens[i].hidden;
 	return false;
 }
 
-const getTokensByContext = (context?: Context) => {
+const getTokensByContext = (context?: ParserContext) => {
 	return {
 		image: imageToken(context),
 		drawio: drawioToken(context),
 	};
 };
 
-export const getTokens = (context?: Context) => {
+export const getTokens = (context?: ParserContext) => {
 	const contextTokens = context ? getTokensByContext(context) : {};
 	return {
 		link: linkToken(context),

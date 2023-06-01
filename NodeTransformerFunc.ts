@@ -1,11 +1,11 @@
 import { JSONContent } from "@tiptap/core";
-import Context from "../../Context/Context";
+import ParserContext from "../../ParserContext/ParserContext";
 
 type NodeTransformerFunc = (
 	node: JSONContent,
 	previousNode?: JSONContent,
 	nextNode?: JSONContent,
-	context?: Context
+	context?: ParserContext
 ) => Promise<{ isSet: boolean; value: JSONContent }>;
 
 export default NodeTransformerFunc;

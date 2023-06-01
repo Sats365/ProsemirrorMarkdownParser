@@ -1,8 +1,8 @@
 import { JSONContent } from "@tiptap/core";
 import Token from "markdown-it/lib/token";
-import Context from "../../Context/Context";
 import { RenderableTreeNodes, Schema, SchemaType, Tag } from "../../Parser/Markdoc";
 import { ParserOptions } from "../../Parser/Parser";
+import ParserContext from "../../ParserContext/ParserContext";
 import { getSquareFormatter } from "../Formatter/Formatters/SquareFormatter";
 import NodeTransformerFunc from "./NodeTransformerFunc";
 import { schema } from "./schema";
@@ -12,8 +12,8 @@ export class Transformer {
 
 	transformMdComponents(
 		node: JSONContent,
-		renderer: (content: string, context?: Context, parserOptions?: ParserOptions) => RenderableTreeNodes,
-		context?: Context
+		renderer: (content: string, context?: ParserContext, parserOptions?: ParserOptions) => RenderableTreeNodes,
+		context?: ParserContext
 	) {
 		if (node?.content) node.content = node.content.map((n) => this.transformMdComponents(n, renderer, context));
 		if (node?.marks) {
@@ -46,7 +46,7 @@ export class Transformer {
 		node: JSONContent,
 		previousNode?: JSONContent,
 		nextNode?: JSONContent,
-		context?: Context
+		context?: ParserContext
 	): Promise<JSONContent> {
 		if (node?.content) {
 			const newContent = [];
