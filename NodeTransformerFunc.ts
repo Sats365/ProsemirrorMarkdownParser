@@ -6,6 +6,6 @@ type NodeTransformerFunc = (
 	previousNode?: JSONContent,
 	nextNode?: JSONContent,
 	context?: ParserContext
-) => Promise<{ isSet: boolean; value: JSONContent }>;
+) => Promise<{ isSet: boolean; value: JSONContent }> | { isSet: boolean; value: JSONContent };
 
 export default NodeTransformerFunc;
