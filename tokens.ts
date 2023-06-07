@@ -17,16 +17,15 @@ function listIsTight(tokens, i) {
 }
 
 const getTokensByContext = (context?: ParserContext) => {
-	return {
-		image: imageToken(context),
-		drawio: drawioToken(context),
-	};
+	return {};
 };
 
 export const getTokens = (context?: ParserContext) => {
 	const contextTokens = context ? getTokensByContext(context) : {};
 	return {
 		link: linkToken(context),
+		image: imageToken(),
+		drawio: drawioToken(),
 		code_block: codeBlockToken,
 
 		mermaid: mermaidToken,
