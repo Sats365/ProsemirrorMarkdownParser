@@ -10,19 +10,26 @@ import { schema } from "./schema";
 export class Transformer {
 	constructor(private _schemes: Record<string, Schema>, private _nodeTransformerFuncs: NodeTransformerFunc[]) {}
 
-	transformMdComponents(
+	async transformMdComponents(
 		node: JSONContent,
-		renderer: (content: string, context?: ParserContext, parserOptions?: ParserOptions) => RenderableTreeNodes,
+		renderer: (
+			content: string,
+			context?: ParserContext,
+			parserOptions?: ParserOptions
+		) => Promise<RenderableTreeNodes>,
 		context?: ParserContext
-	) {
-		if (node?.content) node.content = node.content.map((n) => this.transformMdComponents(n, renderer, context));
+	): Promise<JSONContent> {
+		if (node?.content)
+			node.content = await Promise.all(
+				node.content.map(async (n) => await this.transformMdComponents(n, renderer, context))
+			);
 		if (node?.marks) {
 			let inlineMdIndex = node.marks.findIndex((mark) => mark.type === "inlineMd");
 			if (inlineMdIndex !== -1) {
 				node = {
 					type: "inlineMd_component",
 					attrs: {
-						tag: renderer(node.text, context, { isOneElement: true, isBlock: false }) as any,
+						tag: await renderer(node.text, context, { isOneElement: true, isBlock: false }),
 						text: node.text,
 					},
 				};
@@ -33,7 +40,7 @@ export class Transformer {
 				type: "blockMd_component",
 				attrs: {
 					text: node.content[0].text,
-					tag: renderer(node.content[0].text, context, { isOneElement: true, isBlock: true }) as any,
+					tag: await renderer(node.content[0].text, context, { isOneElement: true, isBlock: true }),
 				},
 				content: node.content,
 			};
