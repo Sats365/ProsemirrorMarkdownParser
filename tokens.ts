@@ -1,14 +1,14 @@
-import c4DiagramToken from "../../../../extensions/markdown/elements/diagrams/diagrams/c4Diagram/c4DiagramToken";
-import mermaidToken from "../../../../extensions/markdown/elements/diagrams/diagrams/mermaid/mermaidToken";
-import plantUmlToken from "../../../../extensions/markdown/elements/diagrams/diagrams/plantUml/plantUmlToken";
-import tsDiagramToken from "../../../../extensions/markdown/elements/diagrams/diagrams/tsDiagram/tsDiagramToken";
+import c4DiagramToken from "../../../../core/extensions/markdown/elements/diagrams/diagrams/c4Diagram/c4DiagramToken";
+import mermaidToken from "../../../../core/extensions/markdown/elements/diagrams/diagrams/mermaid/mermaidToken";
+import plantUmlToken from "../../../../core/extensions/markdown/elements/diagrams/diagrams/plantUml/plantUmlToken";
+import tsDiagramToken from "../../../../core/extensions/markdown/elements/diagrams/diagrams/tsDiagram/tsDiagramToken";
 
-import diagramsToken from "../../../../extensions/markdown/elements/diagrams/edit/models/diagramsToken";
-import drawioToken from "../../../../extensions/markdown/elements/drawio/edit/model/drawioToken";
-import codeBlockToken from "../../../../extensions/markdown/elements/fence/edit/model/codeBlockToken";
-import imageToken from "../../../../extensions/markdown/elements/image/edit/model/imageToken";
-import linkToken from "../../../../extensions/markdown/elements/link/edit/model/linkToken";
-import video from "../../../../extensions/markdown/elements/video/edit/model/videoToken";
+import diagramsToken from "../../../../core/extensions/markdown/elements/diagrams/edit/models/diagramsToken";
+import drawioToken from "../../../../core/extensions/markdown/elements/drawio/edit/model/drawioToken";
+import codeBlockToken from "../../../../core/extensions/markdown/elements/fence/edit/model/codeBlockToken";
+import imageToken from "../../../../core/extensions/markdown/elements/image/edit/model/imageToken";
+import linkToken from "../../../../core/extensions/markdown/elements/link/edit/model/linkToken";
+import video from "../../../../core/extensions/markdown/elements/video/edit/model/videoToken";
 import ParserContext from "../../ParserContext/ParserContext";
 
 function listIsTight(tokens, i) {
